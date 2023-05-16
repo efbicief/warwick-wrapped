@@ -1,0 +1,3 @@
+[submodule "sso"]
+	path = sso
+	url = https://github.com/efbicief/python-warwick-sso-oauth-flaskless
