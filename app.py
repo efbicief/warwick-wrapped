@@ -18,7 +18,16 @@ def get_begin_oauth():
 
 @app.route("/oauth/authorised")
 def get_authorised_oauth():
-    return sso.get_authorised_oauth()
+    uuid = sso.get_authorised_oauth()
+    assignments = sso.get_assignments(uuid)
+
+    assignment_names = []
+    for item in assignments['enrolledAssignments']:
+        assignment_names.append(item['name'])
+    for item in assignments['historicAssignments']:
+        assignment_names.append(item['name'])
+
+    return render_template('assignments.html', assignments=assignment_names)
 
 @app.route("/oauth/userInfo")
 def get_warwick_info():
@@ -28,6 +37,6 @@ def get_warwick_info():
 def get_upcoming_events():
     return sso.get_upcoming_events()
 
-@app.route("/oauth/tabula/assignments/")
-def get_assignments():
-    return sso.get_assignments()
+# @app.route("/oauth/tabula/assignments/")
+# def get_assignments(uuid):
+#     return sso.get_assignments(uuid)
