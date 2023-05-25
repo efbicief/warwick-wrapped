@@ -2,4 +2,4 @@
 Warwick Wrapped, a site which summarises your tabula data.
 
 ## Getting started
-Use `flask run` to start the app.
+Use `pipenv run flask run` to start the app. Python 3.10 is required.
