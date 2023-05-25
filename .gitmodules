@@ -1,3 +1,6 @@
 [submodule "sso"]
 	path = sso
 	url = https://github.com/efbicief/python-warwick-sso-oauth-flaskless
+[submodule "templates"]
+	path = templates
+	url = https://github.com/efbicief/warwick_wrapped_flask_templates
