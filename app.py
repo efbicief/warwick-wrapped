@@ -43,6 +43,7 @@ def get_authorised_oauth():
 def get_endpoint():
     uuid = sso.get_cookie_uuid()
     assignments = sso.get_assignments(uuid)
+    member = sso.get_user_info(uuid)
 
     assignment_names = []
     for item in assignments['enrolledAssignments']:
@@ -50,7 +51,7 @@ def get_endpoint():
     for item in assignments['historicAssignments']:
         assignment_names.append(item['name'])
 
-    return render_template('assignments.html', assignments=assignment_names)
+    return render_template('assignments.html', assignments=assignment_names, member=member)
 
 @app.route("/oauth/userInfo")
 def get_warwick_info():
@@ -59,6 +60,7 @@ def get_warwick_info():
 @app.route("/oauth/tabula/events/")
 def get_upcoming_events():
     return sso.get_upcoming_events()
+
 
 @app.route("/results")
 def renderResults():
