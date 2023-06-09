@@ -20,6 +20,7 @@ def get_begin_oauth():
 def get_authorised_oauth():
     uuid = sso.get_authorised_oauth()
     assignments = sso.get_assignments(uuid)
+    member = sso.get_user_info(uuid)
 
     assignment_names = []
     for item in assignments['enrolledAssignments']:
@@ -27,7 +28,7 @@ def get_authorised_oauth():
     for item in assignments['historicAssignments']:
         assignment_names.append(item['name'])
 
-    return render_template('assignments.html', assignments=assignment_names)
+    return render_template('assignments.html', assignments=assignment_names, member=member)
 
 @app.route("/oauth/userInfo")
 def get_warwick_info():
@@ -36,6 +37,13 @@ def get_warwick_info():
 @app.route("/oauth/tabula/events/")
 def get_upcoming_events():
     return sso.get_upcoming_events()
+
+# @app.route('/userInfo')
+# def user_info_page():
+#     uuid = sso.get_authorised_oauth()
+#     member = sso.get_user_info(uuid)
+    
+#     return f"<div>{str(member)}</div>"
 
 # @app.route("/oauth/tabula/assignments/")
 # def get_assignments(uuid):
