@@ -41,9 +41,8 @@ def get_authorised_oauth():
 
 @app.route("/oauth/endpoint")
 def get_endpoint():
-    uuid = sso.get_cookie_uuid()
+    uuid = sso.get_uuid_from_cookie()
     assignments = sso.get_assignments(uuid)
-    member = sso.get_user_info(uuid)
 
     assignment_names = []
     for item in assignments['enrolledAssignments']:
@@ -51,7 +50,7 @@ def get_endpoint():
     for item in assignments['historicAssignments']:
         assignment_names.append(item['name'])
 
-    return render_template('assignments.html', assignments=assignment_names, member=member)
+    return render_template('assignments.html', assignments=assignment_names)
 
 @app.route("/oauth/userInfo")
 def get_warwick_info():
@@ -64,7 +63,7 @@ def get_upcoming_events():
 
 @app.route("/results")
 def renderResults():
-    uuid = sso.get_cookie_uuid()
+    uuid = sso.get_uuid_from_cookie()
     data = dataFormat.UserData(None)
     return render_template('Results.html'
                            ,user_name=data.user_info.name
