@@ -1,7 +1,8 @@
 # pylint: disable=missing-function-docstring
-from flask import Flask, render_template
+from flask import Flask, render_template , make_response
 import sso
 import dataFormat
+import sys
 
 app = Flask(__name__)
 app.config['ENV'] = 'development'
@@ -32,6 +33,15 @@ def get_begin_oauth():
 @app.route("/oauth/authorised")
 def get_authorised_oauth():
     uuid = sso.get_authorised_oauth()
+    response = make_response( render_template("uuid.html") )
+    print(uuid, file=sys.stderr)
+    response.set_cookie( "uuid",uuid )
+    return response
+
+
+@app.route("/oauth/endpoint")
+def get_endpoint():
+    uuid = sso.get_cookie_uuid()
     assignments = sso.get_assignments(uuid)
 
     assignment_names = []
@@ -52,7 +62,7 @@ def get_upcoming_events():
 
 @app.route("/results")
 def renderResults():
-    # uuid = sso.get_authorised_oauth()
+    uuid = sso.get_cookie_uuid()
     data = dataFormat.UserData(None)
     return render_template('Results.html'
                            ,user_name=data.user_info.name
