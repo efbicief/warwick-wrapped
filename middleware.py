@@ -3,6 +3,7 @@ from functools import reduce
 import sso
 from pprint import pprint as bigpp
 from datetime import datetime
+from dateutil.parser import parse
 import human_readable as hr
 
 def defaultWrapFac(default):
@@ -15,9 +16,6 @@ def defaultWrapFac(default):
         return wrap
     return safeWrapper
 
-@defaultWrapFac(False)
-def isSubmissionLate(ass):
-    return ass.get('submission', dict()).get('late', False)
 
 @defaultWrapFac(None)
 def module_cw_mark(ass):
@@ -33,9 +31,9 @@ def module_cw_mark(ass):
 def pack_deadlines(ass):
     module = ass['module']['name']
     cw_name = ass['name']
-    due = datetime.fromisoformat(ass['closeDate'])
-    your_due = datetime.fromisoformat(ass['studentDeadline'])
-    submitted = datetime.fromisoformat(ass['submission']['submittedDate'])
+    due = parse(ass['closeDate'])
+    your_due = parse(ass['studentDeadline'])
+    submitted = parse(ass['submission']['submittedDate'])
     isLate = ass['submission'].get('late', False)
     if module == None or cw_name == None or due == None or your_due == None or submitted == None or isLate == None:
         return None
@@ -100,7 +98,7 @@ def get_latest_ontime_deadline(deadlines:list[tuple[str,str,datetime,datetime,da
 def get_num_lates(deadlines:list[tuple[str,str,datetime,datetime,datetime,bool]]) -> ThreePart:
     num_lates = 0
     for ded in deadlines:
-        if ded[5] == True:
+        if ded[5]:
             num_lates += 1
     return ThreePart("You submitted late", num_lates, "times")
 
@@ -144,13 +142,6 @@ def get_data(uuid)-> User:
             get_num_lates(deadlines)
         ]
     )
-
-    # Number of late assignments
-    late_ass = list(filter(
-        lambda ass: isSubmissionLate(ass),
-        completed_assignments
-    ))
-    num_late_ass = len(late_ass)
 
 
 

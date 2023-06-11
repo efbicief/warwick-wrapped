@@ -9,6 +9,7 @@ oauthlib = "*"
 requests-oauthlib = "*"
 pyyaml = "*"
 human-readable = "*"
+python-dateutil = "*"
 
 [dev-packages]
 
