@@ -60,43 +60,49 @@ assignmentsSVG = SVG("""
     
 
 """Get the number of upcoming assignments from assignments"""
-def num_upcoming_ass(upcoming_ass)->ThreePart:
+def num_upcoming_ass(upcoming_ass) -> ThreePart:
     return ThreePart("You have", len(upcoming_ass), "upcoming assignments")
 
 """Get the number of completed assignments from assignments
     @returns ThreePart data type displying the /You have completed * assignments/"""
-def num_completed_ass(completed_ass)->ThreePart:
+def num_completed_ass(completed_ass) -> ThreePart:
     return ThreePart("You have", len(completed_ass), "completed assignments")
 
 
 """Get the average marks for all submitted assignments 
     @marks a list of [Module, Assignment, Mark] tuples
     @returns ThreePart data type displying the /You have completed * assignments/"""
-def avg_mark(marks:list[tuple[int,str,str]])->ThreePart:
+def avg_mark(marks:list[tuple[int,str,str]]) -> ThreePart:
     mark_sum = round(reduce(lambda a,b:a+b[2],marks,0)/len(marks),1)
     return ThreePart("Your average mark was", mark_sum, "")
 
 """Get the largest marks for all submitted assignments 
     @marks a list of [Module, Assignment, Mark] tuples
     @returns ThreePart data type displying the /You have completed * assignments/"""
-def max_mark(marks:list[tuple[int,str,str]])->FivePart:
+def max_mark(marks:list[tuple[int,str,str]]) -> FivePart:
     marks.sort(key=lambda x:x[2])
     return FivePart("Your maximum mark was", marks[-1][2], "For ",marks[-1][1],marks[-1][0])
 
 """Get the smallest marks for all submitted assignments 
     @marks a list of [Module, Assignment, Mark] tuples
     @returns ThreePart data type displying the /You have completed * assignments/"""
-def min_mark(marks:list[tuple[int,str,str]])->FivePart:
+def min_mark(marks:list[tuple[int,str,str]]) -> FivePart:
     marks.sort(key=lambda x:x[2])
     return FivePart("Your minimum mark was", marks[0][2], "For ", marks[0][1],marks[0][0])
 
 
-def get_latest_ontime_deadline(deadlines:list[tuple[str,str,datetime,datetime,datetime,bool]])->FivePart:
+def get_latest_ontime_deadline(deadlines:list[tuple[str,str,datetime,datetime,datetime,bool]]) -> FivePart:
     ontimes = [ded for ded in deadlines if ded[5] == False]
     ontimes.sort(key=lambda x: x[3]-x[4])
     difference = ontimes[0][3] - ontimes[0][4]
     return FivePart("Your latest on-time submission was", hr.time_delta(difference), "before the deadline for", ontimes[0][1],ontimes[0][0])
 
+def get_num_lates(deadlines:list[tuple[str,str,datetime,datetime,datetime,bool]]) -> ThreePart:
+    num_lates = 0
+    for ded in deadlines:
+        if ded[5] == True:
+            num_lates += 1
+    return ThreePart("You submitted late", num_lates, "times")
 
 
 def get_data(uuid)-> User:
@@ -123,9 +129,9 @@ def get_data(uuid)-> User:
         [
             num_upcoming_ass(upcoming_assignments),
             num_completed_ass(completed_assignments),
+            avg_mark(marks),
             min_mark(marks),
-            max_mark(marks),
-            avg_mark(marks)
+            max_mark(marks)
         ]
     )
 
@@ -134,7 +140,8 @@ def get_data(uuid)-> User:
         "Deadlines",
         deadlinesSVG,
         [
-            get_latest_ontime_deadline(deadlines)
+            get_latest_ontime_deadline(deadlines),
+            get_num_lates(deadlines)
         ]
     )
 
