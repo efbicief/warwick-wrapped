@@ -2,6 +2,7 @@ from dataFormat import User, SVG, Category, ThreePart, FivePart, Image,Page
 from functools import reduce
 import sso
 from pprint import pprint as bigpp
+from datetime import datetime
 
 def defaultWrapFac(default):
     def safeWrapper(func):
@@ -26,6 +27,19 @@ def module_cw_mark(ass):
         return None
     
     return (module, cw_name, mark)
+
+@defaultWrapFac(None)
+def pack_deadlines(ass):
+    module = ass['module']['name']
+    cw_name = ass['name']
+    due = datetime.fromisoformat(ass['closeDate'])
+    your_due = datetime.fromisoformat(ass['studentDeadline'])
+    submitted = datetime.fromisoformat(ass['submission']['submittedDate'])
+    isLate = ass['submission'].get('late', False)
+    if module == None or cw_name == None or due == None or your_due == None or submitted == None or isLate == None:
+        return None
+    
+    return (module, cw_name, due, your_due, submitted, isLate)
 
 deadlinesSVG = SVG("""
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
@@ -96,9 +110,14 @@ def get_data(uuid)-> User:
     assignments = sso.get_assignments(uuid)
     upcoming_assignments = assignments.get("enrolledAssignments")
     completed_assignments = assignments.get("historicAssignments")
+    
+    # List of (module_name, cw_name, mark) for each completed assignment
     marks_none = [module_cw_mark(ass) for ass in completed_assignments]
     marks = [mark for mark in marks_none if mark is not None]
-    bigpp(marks)
+
+    # List of (module_name, cw_name, due_date, your_due_date, submitted_date, isLate) for each completed assignment
+    deadlines_none = [pack_deadlines(ass) for ass in completed_assignments]
+    deadlines = [ded for ded in deadlines_none if ded is not None]
 
     # Assignments category
     assignment_category = Category(
@@ -110,6 +129,15 @@ def get_data(uuid)-> User:
             min_mark(marks),
             max_mark(marks),
             avg_mark(marks)
+        ]
+    )
+
+    # Deadlines category
+    deadlines_category = Category(
+        "Deadlines",
+        deadlinesSVG,
+        [
+
         ]
     )
 
