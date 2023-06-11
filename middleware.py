@@ -41,6 +41,7 @@ def pack_deadlines(ass):
     
     return (module, cw_name, due, your_due, submitted, isLate)
 
+
 deadlinesSVG = SVG("""
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
         <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
@@ -103,6 +104,15 @@ def min_mark(marks:list[tuple[int,str,str]])->FivePart:
     return FivePart("Your minimum mark was", marks[0][2], "For ", marks[0][1],marks[0][0])
 
 
+def get_latest_onime_Deadline(deadlines:list[tuple[str,str,datetime,datetime,datetime,bool]])->FivePart:
+    ontimes = [ded for ded in deadlines if ded[5] == False]
+    print(ontimes)
+    ontimes.sort(key=lambda x: x[3]-x[4])
+    difference= (ontimes[0][3]-ontimes[0][4]).seconds
+    print(difference)
+    return FivePart("Your latest ontime submition was", str(difference), "seconds for", ontimes[0][1],ontimes[0][0])
+
+
 
 def get_data(uuid)-> User:
     member = sso.get_user_info(uuid)
@@ -137,7 +147,7 @@ def get_data(uuid)-> User:
         "Deadlines",
         deadlinesSVG,
         [
-
+            get_latest_onime_Deadline(deadlines)
         ]
     )
 
@@ -155,7 +165,8 @@ def get_data(uuid)-> User:
         courseDetails.get("currentRoute").get("name"),
         courseDetails.get("levelCode", 0),
         [
-            assignment_category
+            assignment_category,
+            deadlines_category
         ]
     )
 
