@@ -55,7 +55,7 @@ def get_endpoint():
     for item in assignments['historicAssignments']:
         assignment_names.append(item['name'])
 
-    return render_template('assignments.html', assignments=assignment_names, member=member,submissions=user_submissions)
+    return render_template('assignments.html', assignments=assignment_names, member=member, submissions=user_submissions)
 
 @app.route("/oauth/userInfo")
 def get_warwick_info():

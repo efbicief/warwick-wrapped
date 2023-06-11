@@ -1,5 +1,5 @@
 from dataFormat import User, SVG, Category, ThreePart, FivePart, Image,Page
-from dataFormat import User
+from functools import reduce
 import sso
 from pprint import pprint as bigpp
 
@@ -17,6 +17,15 @@ def defaultWrapFac(default):
 def isSubmissionLate(ass):
     return ass.get('submission', dict()).get('late', False)
 
+@defaultWrapFac(None)
+def module_cw_mark(ass):
+    module = ass['module']['name']
+    cw_name = ass['name']
+    mark = ass['feedback']['mark']
+    if module == None or cw_name == None or mark == None:
+        return None
+    
+    return (module, cw_name, mark)
 
 deadlinesSVG = SVG("""
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
@@ -32,13 +41,54 @@ assignmentsSVG = SVG("""
     <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
     </svg>
 """)
+    
 
-
-def num_upcoming_ass(upcoming_ass):
+"""
+    Get the number of upcoming assignments from assignments
+"""
+def num_upcoming_ass(upcoming_ass)->ThreePart:
     return ThreePart("You have", len(upcoming_ass), "upcoming assignments")
 
-def num_completed_ass(completed_ass):
-    return ThreePart("You have completed", len(completed_ass), "assignments")
+"""
+    Get the number of completed assignments from assignments
+    
+    @returns ThreePart data type displying the /You have completed * assignments/
+"""
+def num_completed_ass(completed_ass)->ThreePart:
+    return ThreePart("You have", len(completed_ass), "completed assignments")
+
+
+"""
+    Get the average marks for all submitted assignments 
+
+    @marks a list of [Module, Assignment, Mark] tuples
+    @returns ThreePart data type displying the /You have completed * assignments/
+"""
+def avg_mark(marks:list[tuple[int,str,str]])->ThreePart:
+    mark_sum = round(reduce(lambda a,b:a+b[2],marks,1))
+    return ThreePart("Your average mark was", mark_sum/len(marks), "")
+
+"""
+    Get the largest marks for all submitted assignments 
+
+    @marks a list of [Module, Assignment, Mark] tuples
+    @returns ThreePart data type displying the /You have completed * assignments/
+"""
+def max_mark(marks:list[tuple[int,str,str]])->FivePart:
+    marks.sort(key=lambda x:x[2])
+    return FivePart("Your maximum mark was", marks[-1][2], "For ",marks[-1][1],marks[-1][0])
+
+"""
+    Get the smallest marks for all submitted assignments 
+
+    @marks a list of [Module, Assignment, Mark] tuples
+    @returns ThreePart data type displying the /You have completed * assignments/
+"""
+def min_mark(marks:list[tuple[int,str,str]])->FivePart:
+    marks.sort(key=lambda x:x[2])
+    return FivePart("Your minimum mark was", marks[0][2], "For ", marks[0][1],marks[0][0])
+
+
 
 def get_data(uuid)-> User:
     member = sso.get_user_info(uuid)
@@ -46,6 +96,9 @@ def get_data(uuid)-> User:
     assignments = sso.get_assignments(uuid)
     upcoming_assignments = assignments.get("enrolledAssignments")
     completed_assignments = assignments.get("historicAssignments")
+    marks_none = [module_cw_mark(ass) for ass in completed_assignments]
+    marks = [mark for mark in marks_none if mark is not None]
+    bigpp(marks)
 
     # Assignments category
     assignment_category = Category(
@@ -53,7 +106,10 @@ def get_data(uuid)-> User:
         assignmentsSVG,
         [
             num_upcoming_ass(upcoming_assignments),
-            num_completed_ass(completed_assignments)
+            num_completed_ass(completed_assignments),
+            min_mark(marks),
+            max_mark(marks),
+            avg_mark(marks)
         ]
     )
 
