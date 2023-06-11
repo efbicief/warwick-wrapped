@@ -44,6 +44,7 @@ def get_endpoint():
     uuid = sso.get_uuid_from_cookie()
     assignments = sso.get_assignments(uuid)
     member = sso.get_user_info(uuid)
+    user_submissions = sso.get_assignments(uuid)
 
     assignment_names = []
     for item in assignments['enrolledAssignments']:
@@ -51,7 +52,7 @@ def get_endpoint():
     for item in assignments['historicAssignments']:
         assignment_names.append(item['name'])
 
-    return render_template('assignments.html', assignments=assignment_names, member=member)
+    return render_template('assignments.html', assignments=assignment_names, member=member,submissions=user_submissions)
 
 @app.route("/oauth/userInfo")
 def get_warwick_info():
@@ -65,11 +66,11 @@ def get_upcoming_events():
 @app.route("/results")
 def renderResults():
     uuid = sso.get_uuid_from_cookie()
-    data = dataFormat.UserData(None)
+    data = dataFormat.User(None)
     return render_template('Results.html'
-                           ,user_name=data.user_info.name
-                           ,year_of_study=data.user_info.year_of_study
-                            ,degree=data.user_info.degree)
+                           ,user_name=data.name
+                           ,year_of_study=data.year_of_study
+                            ,degree=data.degree)
 
 
 # @app.route("/oauth/tabula/assignments/")
