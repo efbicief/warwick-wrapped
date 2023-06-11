@@ -73,8 +73,13 @@ def renderResults():
         return redirect("/", code=302)
     if uuid==None:
         return redirect("/", code=302) 
-    return render_template('Results.html'
-                           ,userData=middleware.convert_to_page(middleware.get_data(uuid)))
+    
+    try:
+        userData=middleware.convert_to_page(middleware.get_data(uuid))
+    except:
+        return redirect("/", code=302) 
+
+    return render_template('Results.html',userData=userData)
 
 
 # @app.route("/oauth/tabula/assignments/")
