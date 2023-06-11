@@ -74,10 +74,11 @@ def renderResults():
     if uuid==None:
         return redirect("/", code=302) 
     
-    try:
-        userData=middleware.convert_to_page(middleware.get_data(uuid))
-    except:
-        return redirect("/", code=302) 
+    userData=middleware.convert_to_page(middleware.get_data(uuid))
+    # try:
+    #     userData=middleware.convert_to_page(middleware.get_data(uuid))
+    # except:
+    #     return redirect("/", code=302) 
 
     return render_template('Results.html',userData=userData)
 

@@ -3,6 +3,7 @@ from functools import reduce
 import sso
 from pprint import pprint as bigpp
 from datetime import datetime
+import human_readable as hr
 
 def defaultWrapFac(default):
     def safeWrapper(func):
@@ -90,13 +91,11 @@ def min_mark(marks:list[tuple[int,str,str]])->FivePart:
     return FivePart("Your minimum mark was", marks[0][2], "For ", marks[0][1],marks[0][0])
 
 
-def get_latest_onime_Deadline(deadlines:list[tuple[str,str,datetime,datetime,datetime,bool]])->FivePart:
+def get_latest_ontime_deadline(deadlines:list[tuple[str,str,datetime,datetime,datetime,bool]])->FivePart:
     ontimes = [ded for ded in deadlines if ded[5] == False]
-    print(ontimes)
     ontimes.sort(key=lambda x: x[3]-x[4])
-    difference= (ontimes[0][3]-ontimes[0][4]).seconds
-    print(difference)
-    return FivePart("Your latest ontime submition was", str(difference), "seconds for", ontimes[0][1],ontimes[0][0])
+    difference = ontimes[0][3] - ontimes[0][4]
+    return FivePart("Your latest on-time submission was", hr.time_delta(difference), "before the deadline for", ontimes[0][1],ontimes[0][0])
 
 
 
@@ -104,8 +103,10 @@ def get_data(uuid)-> User:
     member = sso.get_user_info(uuid)
     courseDetails = member.get("studentCourseDetails")[0]
     assignments = sso.get_assignments(uuid)
-    upcoming_assignments = assignments.get("enrolledAssignments")
-    completed_assignments = assignments.get("historicAssignments")
+    upcoming_assignments_aep = assignments.get("enrolledAssignments")
+    upcoming_assignments = [ass for ass in upcoming_assignments_aep if "AEP submissions" not in str(ass)]
+    completed_assignments_aep = assignments.get("historicAssignments")
+    completed_assignments = [ass for ass in completed_assignments_aep if "AEP submissions" not in str(ass)]
     
     # List of (module_name, cw_name, mark) for each completed assignment
     marks_none = [module_cw_mark(ass) for ass in completed_assignments]
@@ -133,7 +134,7 @@ def get_data(uuid)-> User:
         "Deadlines",
         deadlinesSVG,
         [
-            get_latest_onime_Deadline(deadlines)
+            get_latest_ontime_deadline(deadlines)
         ]
     )
 

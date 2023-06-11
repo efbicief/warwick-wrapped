@@ -8,8 +8,8 @@ flask = "*"
 oauthlib = "*"
 requests-oauthlib = "*"
 pyyaml = "*"
+human-readable = "*"
 
 [dev-packages]
 
 [requires]
-
