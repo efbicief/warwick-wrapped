@@ -1,4 +1,6 @@
 from dataFormat import User, SVG, Category, ThreePart, FivePart, Image,Page
+from dataFormat import User
+import sso
 
 deadlinesSVG= SVG("""
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
@@ -10,7 +12,14 @@ deadlinesSVG= SVG("""
 
 
 def get_data(uuid)-> User:
-    pass
+    member = sso.get_user_info(uuid)
+    courseDetails = member.get("studentCourseDetails")[0]
+    return User(
+        member.get("firstName"),
+        courseDetails.get("currentRoute").get("name"),
+        courseDetails.get("levelCode", 0),
+        []
+    )
 
 def get_temp_data(uuid)-> User:
     categories=[
