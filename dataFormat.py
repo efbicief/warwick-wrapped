@@ -9,6 +9,8 @@ class DisplayItem:
     size:int
     def getSize(self):
         return self.size
+
+# e.g. "Exams", "Modules", "Courseworks", "Deadlines" etc.
 @dataclass
 class Category:
     name:str

@@ -3,6 +3,7 @@ from flask import Flask, render_template , make_response
 import sso
 import dataFormat
 import sys
+import middleware
 
 app = Flask(__name__)
 app.config['ENV'] = 'development'
@@ -45,6 +46,8 @@ def get_endpoint():
     assignments = sso.get_assignments(uuid)
     member = sso.get_user_info(uuid)
     user_submissions = sso.get_assignments(uuid)
+
+    print("print_debug", middleware.get_data(uuid))
 
     assignment_names = []
     for item in assignments['enrolledAssignments']:
