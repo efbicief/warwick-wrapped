@@ -73,8 +73,8 @@ def num_completed_ass(completed_ass)->ThreePart:
     @marks a list of [Module, Assignment, Mark] tuples
     @returns ThreePart data type displying the /You have completed * assignments/"""
 def avg_mark(marks:list[tuple[int,str,str]])->ThreePart:
-    mark_sum = round(reduce(lambda a,b:a+b[2],marks,0),1)
-    return ThreePart("Your average mark was", mark_sum/len(marks), "")
+    mark_sum = round(reduce(lambda a,b:a+b[2],marks,0)/len(marks),1)
+    return ThreePart("Your average mark was", mark_sum, "")
 
 """Get the largest marks for all submitted assignments 
     @marks a list of [Module, Assignment, Mark] tuples
