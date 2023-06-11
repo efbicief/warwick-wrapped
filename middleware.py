@@ -34,6 +34,11 @@ assignmentsSVG = SVG("""
 """)
 
 
+def num_upcoming_ass(upcoming_ass):
+    return ThreePart("You have", len(upcoming_ass), "upcoming assignments")
+
+def num_completed_ass(completed_ass):
+    return ThreePart("You have completed", len(completed_ass), "assignments")
 
 def get_data(uuid)-> User:
     member = sso.get_user_info(uuid)
@@ -42,11 +47,15 @@ def get_data(uuid)-> User:
     upcoming_assignments = assignments.get("enrolledAssignments")
     completed_assignments = assignments.get("historicAssignments")
 
-    # Number of assignements upcoming
-    num_upcoming_ass = len(upcoming_assignments)
-
-    # Number of assignments done
-    num_completed_ass = len(completed_assignments)
+    # Assignments category
+    assignment_category = Category(
+        "Assignments",
+        assignmentsSVG,
+        [
+            num_upcoming_ass(upcoming_assignments),
+            num_completed_ass(completed_assignments)
+        ]
+    )
 
     # Number of late assignments
     late_ass = list(filter(
@@ -61,8 +70,11 @@ def get_data(uuid)-> User:
         member.get("firstName"),
         courseDetails.get("currentRoute").get("name"),
         courseDetails.get("levelCode", 0),
-        []
+        [
+            assignment_category
+        ]
     )
+
 
 
 
