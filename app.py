@@ -3,6 +3,7 @@ from flask import Flask, render_template , make_response
 import sso
 import dataFormat
 import sys
+from middleware import get_temp_data,convert_to_page
 
 app = Flask(__name__)
 app.config['ENV'] = 'development'
@@ -66,16 +67,13 @@ def get_upcoming_events():
 @app.route("/results")
 def renderResults():
     uuid = sso.get_uuid_from_cookie()
-    data = dataFormat.User(None)
     return render_template('Results.html'
-                           ,user_name=data.name
-                           ,year_of_study=data.year_of_study
-                            ,degree=data.degree)
+                           ,userData=convert_to_page(get_temp_data(uuid)))
 
 
 # @app.route("/oauth/tabula/assignments/")
 # def get_assignments(uuid):
-#     return sso.get_assignments(uuid)
+#     return sso.get_assignments(uuid)  
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import ClassVar
 
 @dataclass
 class SVG():
@@ -6,7 +7,8 @@ class SVG():
 
 @dataclass
 class DisplayItem:
-    size:int
+    size:ClassVar[int]
+    TYPE:ClassVar[str]
     def getSize(self):
         return self.size
 @dataclass
@@ -28,26 +30,34 @@ class User:
 # e.g.   "You have submitted" "35" "assignments"
 @dataclass
 class ThreePart(DisplayItem):
-    size=1
     first:str
     second:str
     third:str
+    size=1
+    TYPE="ThreePart"
 
 # Class for a 5 part data structure
 # e.g.   "Your Highest module was" "Databases" "with a total of" "86" "%"
 @dataclass
 class FivePart(DisplayItem):
-    size=1.3
-
     first:str
     second:str
     third:str
     fourth:str
     fith:str
+    size=1.3
+    TYPE="FivePart"
 
 #Class for generc images
 @dataclass
 class Image(DisplayItem):
-    size=2
     url:str
+    size=2
+    TYPE="Image"
 
+# Used for templating do not use
+@dataclass
+class Page(DisplayItem):
+    info:list[Category]
+    size=1
+    TYPE="Page"
