@@ -57,47 +57,33 @@ assignmentsSVG = SVG("""
 """)
     
 
-"""
-    Get the number of upcoming assignments from assignments
-"""
+"""Get the number of upcoming assignments from assignments"""
 def num_upcoming_ass(upcoming_ass)->ThreePart:
     return ThreePart("You have", len(upcoming_ass), "upcoming assignments")
 
-"""
-    Get the number of completed assignments from assignments
-    
-    @returns ThreePart data type displying the /You have completed * assignments/
-"""
+"""Get the number of completed assignments from assignments
+    @returns ThreePart data type displying the /You have completed * assignments/"""
 def num_completed_ass(completed_ass)->ThreePart:
     return ThreePart("You have", len(completed_ass), "completed assignments")
 
 
-"""
-    Get the average marks for all submitted assignments 
-
+"""Get the average marks for all submitted assignments 
     @marks a list of [Module, Assignment, Mark] tuples
-    @returns ThreePart data type displying the /You have completed * assignments/
-"""
+    @returns ThreePart data type displying the /You have completed * assignments/"""
 def avg_mark(marks:list[tuple[int,str,str]])->ThreePart:
     mark_sum = round(reduce(lambda a,b:a+b[2],marks,0),1)
     return ThreePart("Your average mark was", mark_sum/len(marks), "")
 
-"""
-    Get the largest marks for all submitted assignments 
-
+"""Get the largest marks for all submitted assignments 
     @marks a list of [Module, Assignment, Mark] tuples
-    @returns ThreePart data type displying the /You have completed * assignments/
-"""
+    @returns ThreePart data type displying the /You have completed * assignments/"""
 def max_mark(marks:list[tuple[int,str,str]])->FivePart:
     marks.sort(key=lambda x:x[2])
     return FivePart("Your maximum mark was", marks[-1][2], "For ",marks[-1][1],marks[-1][0])
 
-"""
-    Get the smallest marks for all submitted assignments 
-
+"""Get the smallest marks for all submitted assignments 
     @marks a list of [Module, Assignment, Mark] tuples
-    @returns ThreePart data type displying the /You have completed * assignments/
-"""
+    @returns ThreePart data type displying the /You have completed * assignments/"""
 def min_mark(marks:list[tuple[int,str,str]])->FivePart:
     marks.sort(key=lambda x:x[2])
     return FivePart("Your minimum mark was", marks[0][2], "For ", marks[0][1],marks[0][0])
