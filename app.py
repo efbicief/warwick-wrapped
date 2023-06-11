@@ -70,7 +70,7 @@ def get_upcoming_events():
 def renderResults():
     uuid = sso.get_uuid_from_cookie()
     return render_template('Results.html'
-                           ,userData=middleware.convert_to_page(middleware.get_temp_data(uuid)))
+                           ,userData=middleware.convert_to_page(middleware.get_data(uuid)))
 
 
 # @app.route("/oauth/tabula/assignments/")
