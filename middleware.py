@@ -65,7 +65,7 @@ def num_completed_ass(completed_ass)->ThreePart:
     @returns ThreePart data type displying the /You have completed * assignments/
 """
 def avg_mark(marks:list[tuple[int,str,str]])->ThreePart:
-    mark_sum = round(reduce(lambda a,b:a+b[2],marks,1))
+    mark_sum = round(reduce(lambda a,b:a+b[2],marks,0),1)
     return ThreePart("Your average mark was", mark_sum/len(marks), "")
 
 """

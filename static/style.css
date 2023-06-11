@@ -342,7 +342,7 @@ header{
     padding: 0px;
 
 }
-.result-group.column-results>.primary-span{
+.result-group.column-results .primary-span{
     font-size: 200%;
 }
 img.result-group{
