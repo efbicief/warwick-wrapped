@@ -64,8 +64,11 @@ def get_warwick_info():
 def get_upcoming_events():
     return sso.get_upcoming_events()
 
-
 @app.route("/results")
+def loading():
+    return render_template('loading.html')
+
+@app.route("/api/results")
 def renderResults():
     try:
         uuid = sso.get_uuid_from_cookie()

@@ -498,3 +498,23 @@ img.result-group{
     font-size: small; 
     white-space: pre-wrap;
 }
+
+@keyframes loading {
+    from {width: 5vw;}
+    to {width: 100%;}
+}
+.loading-bar{
+    width: 50vw;
+    height: 50px;
+
+    border-radius: 25px;
+    border: 2px solid black;
+}
+.loading-bar-fill{
+    width: 5vw;
+    height: 50px;
+    background-color: #1F857E;
+    border-radius: 25px;
+
+    animation: loading 10s linear infinite;
+}
