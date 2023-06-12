@@ -2,7 +2,7 @@ from dataFormat import User, SVG, Category, ThreePart, FivePart, Image,Page
 from functools import reduce
 import sso
 from pprint import pprint as bigpp
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.parser import parse
 import human_readable as hr
 
@@ -88,13 +88,18 @@ def min_mark(marks:list[tuple[int,str,str]]) -> FivePart:
     marks.sort(key=lambda x:x[2])
     return FivePart("Your minimum mark was", marks[0][2], "For ", marks[0][1],marks[0][0])
 
-
+"""Get the latest on-time assignment
+    @deadlines a list of [Module, Assignment, Due, Your Due, Submitted, isLate] tuples
+    @returns FivePart data type displying the /Your latest on-time submission was * before the deadline for * *"""
 def get_latest_ontime_deadline(deadlines:list[tuple[str,str,datetime,datetime,datetime,bool]]) -> FivePart:
     ontimes = [ded for ded in deadlines if ded[5] == False]
     ontimes.sort(key=lambda x: x[3]-x[4])
     difference = ontimes[0][3] - ontimes[0][4]
     return FivePart("Your latest on-time submission was", hr.time_delta(difference), "before the deadline for", ontimes[0][1],ontimes[0][0])
 
+"""Get the number of late submissions
+    @deadlines a list of [Module, Assignment, Due, Your Due, Submitted, isLate] tuples
+    @returns ThreePart data type displying the /You submitted late * times/"""
 def get_num_lates(deadlines:list[tuple[str,str,datetime,datetime,datetime,bool]]) -> ThreePart:
     num_lates = 0
     for ded in deadlines:
@@ -102,8 +107,15 @@ def get_num_lates(deadlines:list[tuple[str,str,datetime,datetime,datetime,bool]]
             num_lates += 1
     return ThreePart("You submitted late", num_lates, "times")
 
+def avg_before_deadline(deadlines:list[tuple[str,str,datetime,datetime,datetime,bool]]) -> ThreePart:
+    ontime = [ded for ded in deadlines if ded[5] == False]
+    time_deltas = [ded[3]-ded[4] for ded in ontime]
+    print("d", time_deltas)
+    avg_delta = sum(time_deltas, timedelta(0)) / len(time_deltas)
+    return ThreePart("On average you submitted", hr.time_delta(avg_delta), "before the deadline")
 
-def get_data(uuid)-> User:
+
+def get_data(uuid) -> User:
     member = sso.get_user_info(uuid)
     courseDetails = member.get("studentCourseDetails")[0]
     assignments = sso.get_assignments(uuid)
@@ -139,7 +151,8 @@ def get_data(uuid)-> User:
         deadlinesSVG,
         [
             get_latest_ontime_deadline(deadlines),
-            get_num_lates(deadlines)
+            get_num_lates(deadlines),
+            avg_before_deadline(deadlines)
         ]
     )
 
