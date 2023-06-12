@@ -52,6 +52,18 @@ def pack_module(module):
     
     return (code, name, year, cats, mark)
 
+@defaultWrapFac(('Unknown', True))
+def pack_monitoring_point(point):
+    print("Point")
+    bigpp(point)
+    print()
+    name = point['point']['name']
+    attended = point['state'] == "attended"
+    if name == None or attended == None:
+        return ('Unknown', True)
+
+    return (name, attended)
+
 
 deadlinesSVG = SVG("""
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
@@ -134,7 +146,7 @@ def get_num_lates(deadlines:list[tuple[str,str,datetime,datetime,datetime,bool]]
 def avg_before_deadline(deadlines:list[tuple[str,str,datetime,datetime,datetime,bool]]) -> ThreePart:
     ontime = [ded for ded in deadlines if ded[5] == False]
     time_deltas = [ded[3]-ded[4] for ded in ontime]
-    print("d", time_deltas)
+    #print("d", time_deltas)
     avg_delta = sum(time_deltas, timedelta(0)) / len(time_deltas)
     return ThreePart("On average you submitted", hr.time_delta(avg_delta), "before the deadline")
 
@@ -152,13 +164,27 @@ def worst_module(modules:list[tuple[str,str,str,float,float]]):
     return FivePart("Your worst module was", modules[0][1], "with a mark of", modules[0][4], "")
 
 def num_modules(modules:list[tuple[str,str,str,float,float]]):
-    return ThreePart("In total you took", len(modules), "modules")
+    return ThreePart("In total you completed", len(modules), "modules")
+
+def depts_cats(modules:list[tuple[str,str,str,float,float]], member):
+    cats = sum([i[3] for i in modules])
+    depts = member.get("touchedDepartments", [""])
+    return FivePart("You completed", cats, "CATs across", len(depts), "departments")
+
+def missed_monitoring(points:list[tuple[str,bool]]):
+    missed = len([pt for pt in points if not pt[1]])
+    return FivePart("You missed", missed, "out of", len(points), "monitoring points")
+
 
 
 def get_data(uuid) -> User:
     member = sso.get_user_info(uuid)
     courseDetails = member.get("studentCourseDetails")[0]
     assignments = sso.get_assignments(uuid)
+    begin = courseDetails.get("beginDate", "2023")[:4]
+    end = courseDetails.get("endDate", "2023")[:4]
+    attendance = sso.get_attendance(int(begin), int(end), uuid)
+
     upcoming_assignments_aep = assignments.get("enrolledAssignments")
     upcoming_assignments = [ass for ass in upcoming_assignments_aep if "AEP submissions" not in str(ass)]
     completed_assignments_aep = assignments.get("historicAssignments")
@@ -176,6 +202,13 @@ def get_data(uuid) -> User:
     modules_raw = courseDetails.get("moduleRegistrations")
     modules_none = [pack_module(mod) for mod in modules_raw]
     modules = [mod for mod in modules_none if mod is not None]
+
+    # List of monitoring points and whether they were attended
+    monitoring_points = []
+    for year in attendance:
+        for point in year.get("monitoringPoints", []):
+            monitoring_points.append(pack_monitoring_point(point))
+    
 
     # Assignments category
     assignment_category = Category(
@@ -217,7 +250,9 @@ def get_data(uuid) -> User:
         "Overview",
         overviewSVG,
         [
-            num_modules(modules)
+            num_modules(modules),
+            depts_cats(modules, member),
+            missed_monitoring(monitoring_points)
         ]
     )
 
@@ -230,7 +265,8 @@ def get_data(uuid) -> User:
         [
             assignment_category,
             deadlines_category,
-            modules_category
+            modules_category,
+            overview_category
         ]
     )
 
@@ -280,9 +316,9 @@ def convert_to_page(user:User)->User:
                 pages.append(Page(currentPage))
                 currentPage=[]
                 currentPageSize=j.getSize()
-            print(j.TYPE)
+            #print(j.TYPE)
             currentPage.append(j)
         pages.append(Page(currentPage))
         i.items=pages
-        print(i)
+        #print(i)
     return user
