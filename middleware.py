@@ -144,9 +144,7 @@ def get_num_lates(deadlines:list[tuple[str,str,datetime,datetime,datetime,bool]]
     return ThreePart("You submitted late", num_lates, "times")
 
 def avg_before_deadline(deadlines:list[tuple[str,str,datetime,datetime,datetime,bool]]) -> ThreePart:
-    ontime = [ded for ded in deadlines if ded[5] == False]
-    time_deltas = [ded[3]-ded[4] for ded in ontime]
-    #print("d", time_deltas)
+    time_deltas = [ded[3]-ded[4] for ded in deadlines]
     avg_delta = sum(time_deltas, timedelta(0)) / len(time_deltas)
     return ThreePart("On average you submitted", hr.time_delta(avg_delta), "before the deadline")
 
