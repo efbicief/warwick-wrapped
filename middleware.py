@@ -40,6 +40,18 @@ def pack_deadlines(ass):
     
     return (module, cw_name, due, your_due, submitted, isLate)
 
+@defaultWrapFac(None)
+def pack_module(module):
+    code = module['module']['code']
+    name = module['module']['name']
+    year = module['academicYear']
+    cats = module['cats']
+    mark = module['mark']
+    if module == None or name == None or year == None or cats == None or mark == None:
+        return None
+    
+    return (code, name, year, cats, mark)
+
 
 deadlinesSVG = SVG("""
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
@@ -54,6 +66,12 @@ assignmentsSVG = SVG("""
     <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
     <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
     </svg>
+""")
+                     
+modulesSVG = SVG("""
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-menu-button-wide-fill" viewBox="0 0 16 16">
+  <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v2A1.5 1.5 0 0 0 1.5 5h13A1.5 1.5 0 0 0 16 3.5v-2A1.5 1.5 0 0 0 14.5 0h-13zm1 2h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1zm9.927.427A.25.25 0 0 1 12.604 2h.792a.25.25 0 0 1 .177.427l-.396.396a.25.25 0 0 1-.354 0l-.396-.396zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2H1zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2h14zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+</svg>
 """)
     
 
@@ -114,6 +132,9 @@ def avg_before_deadline(deadlines:list[tuple[str,str,datetime,datetime,datetime,
     avg_delta = sum(time_deltas, timedelta(0)) / len(time_deltas)
     return ThreePart("On average you submitted", hr.time_delta(avg_delta), "before the deadline")
 
+def avg_module_mark():
+    pass
+
 
 def get_data(uuid) -> User:
     member = sso.get_user_info(uuid)
@@ -123,6 +144,8 @@ def get_data(uuid) -> User:
     upcoming_assignments = [ass for ass in upcoming_assignments_aep if "AEP submissions" not in str(ass)]
     completed_assignments_aep = assignments.get("historicAssignments")
     completed_assignments = [ass for ass in completed_assignments_aep if "AEP submissions" not in str(ass)]
+    modules_raw = courseDetails.get("moduleRegistrations")
+    modules = [pack_module(mod) for mod in modules_raw]
     
     # List of (module_name, cw_name, mark) for each completed assignment
     marks_none = [module_cw_mark(ass) for ass in completed_assignments]
@@ -156,6 +179,15 @@ def get_data(uuid) -> User:
         ]
     )
 
+    # Modules Category
+    modules_category = Category(
+        "Modules",
+        modulesSVG,
+        [
+            max_mark(marks)
+        ]
+    )
+
 
 
     return User(
@@ -164,7 +196,8 @@ def get_data(uuid) -> User:
         courseDetails.get("levelCode", 0),
         [
             assignment_category,
-            deadlines_category
+            deadlines_category,
+            modules_category
         ]
     )
 
