@@ -174,7 +174,7 @@ def missed_monitoring(points:list[tuple[str,bool]]):
     return FivePart("You missed", missed, "out of", len(points), "monitoring points")
 
 
-
+@defaultWrapFac(User("Bad User", "BEng Cyber-hacking", "0", []))
 def get_data(uuid) -> User:
     member = sso.get_user_info(uuid)
     courseDetails = member.get("studentCourseDetails")[0]
