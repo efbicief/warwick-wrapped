@@ -132,8 +132,18 @@ def avg_before_deadline(deadlines:list[tuple[str,str,datetime,datetime,datetime,
     avg_delta = sum(time_deltas, timedelta(0)) / len(time_deltas)
     return ThreePart("On average you submitted", hr.time_delta(avg_delta), "before the deadline")
 
-def avg_module_mark():
-    pass
+def avg_module_mark(modules:list[tuple[str,str,str,float,float]]):
+    marks = [i[4] for i in modules]
+    avg = round(sum(marks)/len(marks),1)
+    return ThreePart("Your average module mark was", avg, "")
+
+def best_module(modules:list[tuple[str,str,str,float,float]]):
+    modules.sort(key=lambda x:x[4], reverse=True)
+    return FivePart("Your best module was", modules[0][1], "with a mark of", modules[0][4], "")
+
+def worst_module(modules:list[tuple[str,str,str,float,float]]):
+    modules.sort(key=lambda x:x[4])
+    return FivePart("Your worst module was", modules[0][1], "with a mark of", modules[0][4], "")
 
 
 def get_data(uuid) -> User:
@@ -144,8 +154,6 @@ def get_data(uuid) -> User:
     upcoming_assignments = [ass for ass in upcoming_assignments_aep if "AEP submissions" not in str(ass)]
     completed_assignments_aep = assignments.get("historicAssignments")
     completed_assignments = [ass for ass in completed_assignments_aep if "AEP submissions" not in str(ass)]
-    modules_raw = courseDetails.get("moduleRegistrations")
-    modules = [pack_module(mod) for mod in modules_raw]
     
     # List of (module_name, cw_name, mark) for each completed assignment
     marks_none = [module_cw_mark(ass) for ass in completed_assignments]
@@ -154,6 +162,11 @@ def get_data(uuid) -> User:
     # List of (module_name, cw_name, due_date, your_due_date, submitted_date, isLate) for each completed assignment
     deadlines_none = [pack_deadlines(ass) for ass in completed_assignments]
     deadlines = [ded for ded in deadlines_none if ded is not None]
+    
+    # List of (module_code, module_name, year, cats, mark) for modules
+    modules_raw = courseDetails.get("moduleRegistrations")
+    modules_none = [pack_module(mod) for mod in modules_raw]
+    modules = [mod for mod in modules_none if mod is not None]
 
     # Assignments category
     assignment_category = Category(
@@ -184,7 +197,9 @@ def get_data(uuid) -> User:
         "Modules",
         modulesSVG,
         [
-            max_mark(marks)
+            avg_module_mark(modules),
+            best_module(modules),
+            worst_module(modules)
         ]
     )
 
