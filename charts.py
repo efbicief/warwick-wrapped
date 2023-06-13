@@ -22,7 +22,7 @@ def save_chart(func)->Callable[[],Image]:
     def wrapper(*args, **kwargs)-> Image:
         """Save the chart to a file with a hashed name."""
         axes = func(*args, **kwargs)
-        name = abs(hash(axes.get_title()))
+        name = abs(hash(axes))
         plt.savefig(f'charts/{name}')
         return Image(str(name))
     return wrapper
