@@ -24,6 +24,7 @@ def save_chart(func)->Callable[[],Image]:
         axes = func(*args, **kwargs)
         name = abs(hash(axes))
         plt.savefig(f'charts/{name}')
+        plt.close()
         return Image(str(name))
     return wrapper
 
