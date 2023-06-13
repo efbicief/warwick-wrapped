@@ -11,4 +11,4 @@ class Config:
         if self.CONSUMER_KEY is None or self.CONSUMER_SECRET is None:
             raise Exception("Consumer key or secret not provided in config")
 
-CONFIG = Config("config.yaml")
+CONFIG = Config("config/config.yaml")
