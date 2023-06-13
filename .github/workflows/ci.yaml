@@ -3,7 +3,7 @@ name: CI # the name of our workflow is 'CI'
 # run this workflow when we push to the 'main' branch
 on: 
   push:
-    branches: [ deployment ]
+    branches: [ main ]
 
 # the list of jobs in this workflow
 jobs:
