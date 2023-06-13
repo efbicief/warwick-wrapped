@@ -3,8 +3,12 @@ import random
 import os
 from typing import Callable
 
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
+
+import numpy as np
 
 from dataFormat import Image
 
@@ -40,4 +44,20 @@ def test_chart()->Axes:
     axes.set_title('Test Chart')
     axes.set_xlabel('x')
     axes.set_ylabel('y')
+    return axes
+
+@save_chart
+def graph_before_deadline(deadlines) -> Axes:
+    deadlines.sort(key=lambda x: x[4])
+    time_deltas = [(ded[3] - ded[4]).total_seconds() for ded in deadlines]
+
+    _, axes = plt.subplots()
+
+    axes.scatter(range(len(time_deltas)), time_deltas)
+    axes.set_title('Time before deadline for each submission')
+    axes.set_xlabel('Submission number')
+    axes.set_ylabel('Time before deadline')
+
+    axes.plot(np.poly1d(time_deltas))
+
     return axes

@@ -8,7 +8,7 @@ from dateutil.parser import parse
 import human_readable as hr
 
 import sso
-from charts import test_chart
+from charts import test_chart, graph_before_deadline
 from dataFormat import User, SVG, Category, ThreePart, FivePart,Page
 
 
@@ -51,6 +51,7 @@ def pack_deadlines(ass:AssignmentResponce)->Union[Deadline,None]:
         Coursework Name
         Due date (exclusive of alowances)
         Due date (inclusive of alowances)
+        Submitted date
         is late , boolean flag """
     module = ass['module']['name']
     cw_name = ass['name']
@@ -79,10 +80,6 @@ def pack_module(module:ModuleResponce)->Union[Module,None]:
 @default_wrap_fac(('Unknown', True))
 def pack_monitoring_point(point:PointResponce)->MonitoringPoint:
     """Check monitoring points by name and attendance"""
-    #TODO remove
-    print("Point")
-    bigpp(point)
-    print()
     name = point['point']['name']
     attended = point['state'] == "attended"
     if name is None or attended is None:
@@ -269,7 +266,8 @@ def get_data(uuid) -> User:
         [
             get_latest_ontime_deadline(deadlines),
             get_num_lates(deadlines),
-            avg_before_deadline(deadlines)
+            avg_before_deadline(deadlines),
+            graph_before_deadline(deadlines)
         ]
     )
 
