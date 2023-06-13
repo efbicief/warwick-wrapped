@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <script src="{{url_for('static', filename='js/jump.js')}}" async></script>
+
+    <title>Warwick - Wrapped</title>
+</head>
+<body id="doc-body">
+
+    <div class="button-control-group" data-shown="false">
+        <button class="scroll-up-button" onclick="buttonUp()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+              </svg>
+        </button> 
+        <button class="scroll-down-button" onclick="buttonDown()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
+              </svg>
+        </button>
+    </div>
+
+
+    <div class="block">
+        <header>
+
+            <div class="header-topper">
+                <ul>
+                    <li><a class="clean-link" href="/PrivacyPolicy">Privacy Notice</a></li>
+                </ul>
+
+            </div>
+            <div class="inner-header">
+                
+                <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" width="89" height="45" fill="%231F857E" viewBox="0 2 89 45">
+                    <path fill="#1F857E" d="M0 .725h88.934L63.5 45 44 12 25 45 0 .725Z"/>
+                </svg>
+
+                <a href="/" class="clean-link black">
+                    <h1 class="title-name">WARWICK WRAPPED</h1>
+                </a>
+            </div>
+            <div class="header-bottom">
+
+            </div>
+
+        </header>
+        <div class="content">
+            <div class="content-text">
+                Welcome to Warwick Wrapped, {{ userData.name }}. Your year in review.<br><br>
+                Year {{ userData.year_of_study }}, {{ userData.degree }}
+            </div>
+
+            <div class="sign-in-wrapper">
+                <button class="Start-button sign-in" onclick="a.animate()">START</button>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-topper"></div>
+            <div class="images">    
+                <a href="https://uwcs.co.uk/"><img class="footer-logo" src="{{url_for('static', filename='images/uwcs_logo.svg')}}" ></a>
+                <img class="footer-logo" src="{{url_for('static', filename='images/github_logo.svg')}}" >
+                <a href="https://www.youtube.com/watch?v=wkEiZWLW96o" class="clean-link milk_Mondays"><img class="footer-logo" src="{{url_for('static', filename='images/MilkSticker.svg')}}" > </a>        
+            </footer>
+    </div>
+
+    {% for category in userData.info %}
+    <div class="block result-block">
+        <div class=block-title  data-shown="false">
+            {{category.image.file |safe }}
+            <h1>{{category.name}}</h1>
+        </div>
+        <div class=block-results>
+            {% for page in category.items %}
+                <div class=block-results-page data-shown="false">
+                    {% for result in page.info %}
+                        {% if result.TYPE == 'ThreePart' %}
+                            <div class="result-group row-results">
+                                <span class="pre-span">{{result.first}}</span>
+                                <span class="primary-span">{{result.second}}</span>
+                                <span class="post-span">{{result.third}}</span>
+                            </div>
+                        {% elif result.TYPE == 'FivePart' %}
+                            <div class="result-group column-results">
+                                <span class="pre-span">{{result.first}}</span>
+                                <span class="primary-span">{{result.second}}</span>
+                                <div class="result-group row-results">
+                                    <span class="pre-span">{{result.third}}</span>
+                                    <span class="primary-span">{{result.fourth}}</span>
+                                    <span class="post-span">{{result.fith}}</span>
+                                </div>
+                            </div>
+                        {% elif result.TYPE == 'Image' %}
+                            <img class="result-group" src="/charts/{{result.url}}">
+                        {% else %}
+                            <div class="result-group column-results">
+                                Unkown result type
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% endfor %}
+
+    <div class="block">
+        <header>
+
+            <div class="header-topper">
+                <ul>
+                    <li><a class="clean-link" href="/privacypolicy">Privacy Notice</a></li>
+                </ul>
+
+            </div>
+            <div class="inner-header">
+                
+                <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" width="89" height="45" fill="%231F857E" viewBox="0 2 89 45">
+                    <path fill="#1F857E" d="M0 .725h88.934L63.5 45 44 12 25 45 0 .725Z"/>
+                </svg>
+
+                <h1 class="title-name">WARWICK WRAPPED</h1>
+            </div>
+            <div class="header-bottom">
+
+            </div>
+
+        </header>
+        <div class="content">
+            <h3>Thank you for using Warwick Wrapped</h3>
+            <div class="content-text">
+                See your results in full <a href="https://www.google.co.uk">here</a> 
+            </div>
+
+            <div class="content-text">
+                Created by:
+                <ul>
+                    <li>Person 1</li>
+                    <li>Person 2</li>
+                    <li>Person 3</li>
+                </ul>
+
+                Using the <a href="https://www.google.co.uk">Tabula</a> API with thanks to warwick <a href="https://www.google.co.uk">ITS</a> for access and <a href="https://www.google.co.uk">UWCS</a> for 
+                hosting. 
+            </div>
+
+            <div class="content-text">
+                Source code available on <a href="https://www.google.co.uk">GitHub</a>
+            </div>
+
+            <div class=" content-text citations">
+Upbeat Corporate by JP Bianchini | https://soundcloud.com/jpmbianchini
+Music promoted by https://www.free-stock-music.com
+Creative Commons / Attribution 3.0 Unported License (CC BY 3.0)
+https://creativecommons.org/licenses/by/3.0/deed.en_US
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-topper"></div>
+            <div class="images">    
+                <a href="https://uwcs.co.uk/"><img class="footer-logo" src="{{url_for('static', filename='images/uwcs_logo.svg')}}" ></a>
+                <img class="footer-logo" src="{{url_for('static', filename='images/github_logo.svg')}}" >
+                <a href="https://www.youtube.com/watch?v=wkEiZWLW96o" class="clean-link milk_Mondays"><img class="footer-logo" src="{{url_for('static', filename='images/MilkSticker.svg')}}" > </a>        
+            </footer>
+    </div>
+
+
+</body>
+</html>

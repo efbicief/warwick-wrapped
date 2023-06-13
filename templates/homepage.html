@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+<div class="content-text">
+    Welcome to Warwick Wrapped. Your year in review.
+</div>
+<div class="content-text">
+    A tech team™️ project
+</div>
+
+<div class="sign-in-wrapper">
+    <button class="sign-in" onClick="location.href='/oauth/begin'" type="button">
+        Sign in with Warwick ITS
+        <img class="sign-in-image" src="{{url_for('static', filename='images/warwick_logo.svg')}}">
+    </button>
+    <a href="/oauth/info">why?</a>
+</div>
+{% endblock %}

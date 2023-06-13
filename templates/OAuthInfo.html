@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="info">
+    <p>
+    We require a sign-in with Warwick ITS to access your Tabula information. When you sign in with your Warwick ITS account, this
+    gives us permission to view and process your data in line with our </a href="/PrivacyPolicy">privacy policy</a>, and is required
+    for the functioning of our site.
+    </p>
+
+    <h2>Q: Do we receive your Warwick username and password?</h2>
+    <p>
+        A: No, we cannot view your username and password. When you log in with ITS, we receive a token providing permission to 
+        view your Tabula data. This token is used in place of a username and password, but can only be used to make Tabula requests. 
+    </p>
+    <h2>Q: How can I remove permission?</h2>
+        A: Permission to access the information can be revoked by removing the authorised token at <a href="https://websignon.warwick.ac.uk/oauth/tokens">https://websignon.warwick.ac.uk/oauth/tokens</a>.
+    <div class="sign-in-wrapper">
+        <a href="/" class="Start-button sign-in clean-link black">BACK</a>
+    </div>
+</div> 
+{% endblock %}
