@@ -5,6 +5,7 @@ from pprint import pprint as bigpp
 from datetime import datetime, timedelta
 from dateutil.parser import parse
 import human_readable as hr
+from charts import test_chart
 
 def defaultWrapFac(default):
     def safeWrapper(func):
@@ -217,7 +218,9 @@ def get_data(uuid) -> User:
             num_completed_ass(completed_assignments),
             avg_mark(marks),
             min_mark(marks),
-            max_mark(marks)
+            max_mark(marks),
+            test_chart(),
+            test_chart()
         ]
     )
 
