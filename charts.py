@@ -49,26 +49,29 @@ def test_chart()->Axes:
 @save_chart
 def graph_before_deadline(deadlines) -> Axes:
     deadlines.sort(key=lambda x: x[4])
-    time_deltas = [(ded[3] - ded[4]).total_seconds() for ded in deadlines]
+    time_deltas = [(ded[3] - ded[4]).total_seconds()/86400 for ded in deadlines] # time_delta in days
 
     _, axes = plt.subplots()
 
     axes.scatter(range(len(time_deltas)), time_deltas)
     axes.set_title('Time before deadline for each submission')
     axes.set_xlabel('Submission number')
-    axes.set_ylabel('Time before deadline')
-
+    axes.set_ylabel('Time before deadline (days)')
+    axes.set_ylim(-5,14)
     axes.plot(np.poly1d(time_deltas))
 
     return axes
 
 @save_chart
 def module_grade_histogram(modules) -> Axes:
-    bins = [i*5 for i in range(21)]
+    bins = [i*2 for i in range(51)]
     marks = [i[4] for i in modules]
     
     _, axes = plt.subplots()
 
     axes.hist(marks, bins)
+    axes.set_title('Your module grades distribution')
+    axes.set_xlabel('Mark')
+    axes.set_ylabel('Number of modules')
 
     return axes
