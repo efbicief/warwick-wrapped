@@ -211,7 +211,7 @@ def missed_monitoring(points:list[MonitoringPoint]):
 def get_data(uuid) -> User:
     """Get all the data for a user"""
     member = sso.get_user_info(uuid)
-    course_details = member.get("studentCourseDetails")[-1]
+    course_details = member.get("studentCourseDetails", [])[-1]
     assignments = sso.get_assignments(uuid)
     begin = course_details.get("beginDate", "2023")[:4]
     end = course_details.get("endDate", "2023")[:4]
@@ -234,7 +234,7 @@ def get_data(uuid) -> User:
     deadlines = [ded for ded in deadlines_none if ded is not None]
 
     # List of (module_code, module_name, year, cats, mark) for modules
-    modules_raw = course_details.get("moduleRegistrations")
+    modules_raw = course_details.get("moduleRegistrations", dict())
     modules_none = [pack_module(mod) for mod in modules_raw]
     modules = [mod for mod in modules_none if mod is not None]
 
@@ -294,8 +294,8 @@ def get_data(uuid) -> User:
 
 
     return User(
-        member.get("firstName"),
-        course_details.get("currentRoute").get("name"),
+        member.get("firstName", "Unknown first name"),
+        course_details.get("currentRoute", dict()).get("name", "Unknown course"),
         course_details.get("levelCode", 0),
         [
             assignment_category,
