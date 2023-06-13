@@ -1,0 +1,50 @@
+name: CI # the name of our workflow is 'CI'
+
+# run this workflow when we push to the 'main' branch
+on: 
+  push:
+    branches: []
+
+# the list of jobs in this workflow
+jobs:
+
+# define a job
+  build: 
+    name: Build and Push Container Image # the job's full name
+    runs-on: ubuntu-latest # the OS that this job runs on
+
+    # we need write permissions to publish the package
+    permissions: 
+      packages: write
+
+    # the steps that this job consists of
+    steps:
+      - uses: actions/checkout@v3 # check out our repo
+        with:
+          submodules: 'true'
+
+      - name: Log in to the container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+        # generate the tags that we'll use to name our image
+      - name: Get Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: | # tag with commit hash and with 'latest'
+            type=sha 
+            type=raw,value=latest,enable={{is_default_branch}}
+
+        # build and push our image, using output from previous step
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
