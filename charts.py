@@ -61,3 +61,4 @@ def graph_before_deadline(deadlines) -> Axes:
     axes.plot(np.poly1d(time_deltas))
 
     return axes
+
