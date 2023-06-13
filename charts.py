@@ -62,3 +62,13 @@ def graph_before_deadline(deadlines) -> Axes:
 
     return axes
 
+@save_chart
+def module_grade_histogram(modules) -> Axes:
+    bins = [i*5 for i in range(21)]
+    marks = [i[4] for i in modules]
+    
+    _, axes = plt.subplots()
+
+    axes.hist(marks, bins)
+
+    return axes

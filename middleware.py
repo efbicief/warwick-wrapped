@@ -8,7 +8,7 @@ from dateutil.parser import parse
 import human_readable as hr
 
 import sso
-from charts import test_chart, graph_before_deadline
+from charts import test_chart, graph_before_deadline, module_grade_histogram
 from dataFormat import User, SVG, Category, ThreePart, FivePart,Page
 
 
@@ -215,7 +215,7 @@ def get_data(uuid) -> User:
     assignments = sso.get_assignments(uuid)
     begin = course_details.get("beginDate", "2023")[:4]
     end = course_details.get("endDate", "2023")[:4]
-    attendance = sso.get_attendance(int(begin), int(end), uuid)
+    attendance = sso.get_attendance(int(begin), int(end)+1, uuid)
 
     upcoming_assignments_aep = assignments.get("enrolledAssignments")
     upcoming_assignments = [ass for ass in upcoming_assignments_aep if \
@@ -254,8 +254,6 @@ def get_data(uuid) -> User:
             avg_mark(marks),
             min_mark(marks),
             max_mark(marks),
-            test_chart(),
-            test_chart()
         ]
     )
 
@@ -278,7 +276,8 @@ def get_data(uuid) -> User:
         [
             avg_module_mark(modules),
             best_module(modules),
-            worst_module(modules)
+            worst_module(modules),
+            module_grade_histogram(modules)
         ]
     )
 
@@ -292,7 +291,6 @@ def get_data(uuid) -> User:
             missed_monitoring(monitoring_points)
         ]
     )
-
 
 
     return User(
