@@ -137,10 +137,6 @@ def get_attendance(begin:int, end:int, oauth_uuid=None):
         resp = oauth.request("GET", url_reqd)
         end_data.append(resp.json())
 
-    print("attendance")
-    pp(end_data)
-    print()
-
     return end_data
 
 def _get_oauth_session_for_request(oauth_uuid=None):
