@@ -7,6 +7,7 @@ class Config:
 
         self.CONSUMER_KEY: str = parsed.get("consumer_key")
         self.CONSUMER_SECRET: str = parsed.get("consumer_secret")
+        self.BASE_URL: str = parsed.get("base_url")
 
         if self.CONSUMER_KEY is None or self.CONSUMER_SECRET is None:
             raise Exception("Consumer key or secret not provided in config")
