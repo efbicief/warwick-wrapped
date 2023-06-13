@@ -11,6 +11,7 @@ pyyaml = "*"
 human-readable = "*"
 python-dateutil = "*"
 matplotlib = "*"
+gunicorn = "*"
 
 [dev-packages]
 

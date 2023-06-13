@@ -14,6 +14,7 @@ from pprint import pprint as pp
 
 CONSUMER_SECRET = CONFIG.CONSUMER_SECRET
 CONSUMER_KEY = CONFIG.CONSUMER_KEY
+BASE_URL = CONFIG.BASE_URL
 
 ACCESS_TOKEN_URL = "https://websignon.warwick.ac.uk/oauth/accessToken"
 AUTHORISE_URL = "https://websignon.warwick.ac.uk/oauth/authorise?"
@@ -37,7 +38,7 @@ def get_begin_oauth():
 
 
 def get_base_url():
-    return "http://localhost:5000"
+    return f"http://{BASE_URL}"
 
 
 def get_redirect_to_authorise_url(callback, expiry="forever"):
