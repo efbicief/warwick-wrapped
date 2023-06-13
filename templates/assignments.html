@@ -1,0 +1,23 @@
+<!doctype html>
+<title>Wrap!</title>
+<h1>Your assignments are....</h1>
+{% for a_name in assignments %}
+    <p>{{ a_name }}<p>
+{% else %}
+    <p>done goofed! no uuid! blehhh</p>
+{% endfor %}
+
+<h1>User...</h1>
+<p>University ID: {{ member.universityId }}</p>
+<p>First name: {{ member.firstName }}</p>
+<p>Last name: {{ member.lastName }}</p>
+<p>Department: {{ member.homeDepartment }}</p>
+
+<h1>Member...</h1>
+<!-- {% for year in member.studentCourseDetails %}
+<p>Year: {{ year }}</p>
+{% endfor %} -->
+<p>{{ member }}</p>
+
+<h1>Submissions...</h1>
+{{submissions}}

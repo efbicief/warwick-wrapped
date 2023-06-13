@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="content-text">
+    Welcome to Warwick Wrapped. Your year in review.
+</div>
+<div class="content-text">
+    Please wait while we load your data.
+</div>
+<div class="loading-bar">
+    <div class="loading-bar-fill" id="loading-bar-fill"></div>
+</div>
+
+<script>
+    fetch('/api/results',{
+        'credentials': 'same-origin'
+    }).then(function(response){
+        return response.text()
+    }).then(function(body){
+        document.write(body)
+    })
+</script>
+
+
+{% endblock %}
