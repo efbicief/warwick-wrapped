@@ -19,9 +19,11 @@ jobs:
 
     # the steps that this job consists of
     steps:
-      - uses: actions/checkout@v3 # check out our repo
-        with:
-          submodules: 'true'
+      - name: Checkout Repository
+        uses: actions/checkout@v3 # check out our repo
+        
+      - name: Checkout Submodules
+        uses: textbook/git-checkout-submodule-action@master
 
       - name: Log in to the container registry
         uses: docker/login-action@v2
