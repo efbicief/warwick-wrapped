@@ -3,7 +3,7 @@ This is the main file for the web application.
 It contains the routes for the webpages and the functions that are
 called when the user visits a page.
 """
-from flask import Flask, render_template ,redirect,make_response
+from flask import Flask, render_template ,redirect,make_response,url_for
 import sso
 import middleware
 from dataFormat import User
@@ -13,7 +13,6 @@ app = Flask(__name__)
 app.config['ENV'] = 'development'
 app.config['DEBUG'] = True
 app.config['TESTING'] = True
-
 
 @app.route("/")
 def home():
@@ -100,6 +99,8 @@ def get_chart(chart_id:str):
     response.headers.set('Content-Type', 'image/png')
     response.headers.set('Content-Disposition', 'attachment', filename=f'{chart_id}.png')
     return response
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

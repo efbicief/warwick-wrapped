@@ -143,12 +143,12 @@ class mediaController{
     //slowly reduce audio volumne
     fadeOutAudio(){
         if (this.audio){
-            this.audio.volume-=0.1;
-            if (this.audio.volume>0){
-                setTimeout(()=>this.fadeOutAudio.call(this),100);
-            }else{
+            if (this.audio.volume<=0.1){
                 this.audio.pause();
+                return
             }
+            this.audio.volume-=0.1;
+            setTimeout(()=>this.fadeOutAudio.call(this),100);
         }
     }
 
