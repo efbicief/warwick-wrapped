@@ -518,3 +518,9 @@ img.result-group{
 
     animation: loading 10s linear infinite;
 }
+
+
+.Kone-spinner{
+    width: 15vw;
+    height: auto;
+}

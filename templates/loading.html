@@ -7,9 +7,72 @@
 <div class="content-text">
     Please wait while we load your data.
 </div>
-<div class="loading-bar">
-    <div class="loading-bar-fill" id="loading-bar-fill"></div>
-</div>
+<svg class="Kone-spinner" viewBox="0 0 100 150">
+    <defs>
+        <radialGradient id="koan-background-gradient" cx="1.93" cy="0.5" r="3">
+            <stop offset="0%" stop-color="#e6e6e6" />
+            <stop offset="50%" stop-color="#e6e6e6" />
+            <stop offset="50%" stop-color="#cfcfcf" />
+            <stop offset="100%" stop-color="#cfcfcf" />
+        </radialGradient>
+
+        <path id="body"
+            d="M 48 5                  L 16 120                  Q 64 128, 96 120                  L 64 5                  Q 56 0, 48 5"
+            stroke="none" />
+
+        <clipPath id="koan-clip">
+            <!--
+              Everything outside the path will be
+              clipped and therefore invisible.
+            -->
+            <use xlink:href="#body" />
+        </clipPath>
+
+        <path id="bottom"
+            d="M 16 112                  Q 64 120, 96 112                  L 96 120                  Q 64 128, 16 120                  L 16 112" />
+
+
+        <path id="neon-top" d="M 5 20 Q 32 32, 64 20 T 112 20 T 192 20 T 256 20" transform="rotate(2)" fill="none">
+            <animate attributeName="d" begin="0s" dur="3s" repeatCount="indefinite" values="M 0 20 Q 32 32, 64 20 T 112 20 T 192 20 T 256 20;
+                           M -32 20 Q 0 32, 32 20 T 96 20 T 160 20 T 224 20;
+                           M -64 20 Q -32 32, 0 20 T 64 20 T 112 20 T 192 20;
+                           M -96 20 Q -64 32, -32 20 T 32 20 T 96 20 T 160 20;
+                           M -128 20 Q -96 32, -64 20 T 0 20 T 64 20 T 112 20" />
+        </path>
+
+        <path id="neon-middle" d="M 0 30 Q 32 32, 64 30 T 112 30 T 192 30 T 256 30" transform="rotate(-1)" fill="none">
+            <animate attributeName="d" begin="0s" dur="3s" repeatCount="indefinite" values="M 0 30 Q 32 32, 64 30 T 112 30 T 192 30 T 256 30;
+                           M -32 30 Q 0 32, 32 30 T 96 30 T 160 30 T 224 30;
+                           M -64 30 Q -32 32, 0 30 T 64 30 T 112 30 T 192 30;
+                           M -96 30 Q -64 32, -32 30 T 32 30 T 96 30 T 160 30;
+                           M -128 30 Q -96 32, -64 30 T 0 30 T 64 30 T 112 30" />
+        </path>
+
+        <path id="neon-bottom" d="M 0 40 Q 32 32, 64 40 T 112 40 T 192 40 T 256 40" transform="rotate(3)" fill="none">
+            <animate attributeName="d" begin="0s" dur="3s" repeatCount="indefinite" values="M 0 40 Q 32 32, 64 40 T 112 40 T 192 40 T 256 40;
+                           M -32 40 Q 0 32, 32 40 T 96 40 T 160 40 T 224 40;
+                           M -64 40 Q -32 32, 0 40 T 64 40 T 112 40 T 192 40;
+                           M -96 40 Q -64 32, -32 40 T 32 40 T 96 40 T 160 40;
+                           M -128 40 Q -96 32, -64 40 T 0 40 T 64 40 T 112 40" />
+        </path>
+
+
+        <path id="middle" d="M 0 72                  Q 64 60, 112 72" fill="none" />
+    </defs>
+
+    <use class="id7-koan-spinner__body" clip-path="url(#koan-clip)" xlink:href="#body"
+        fill="url(#koan-background-gradient)" />
+    <use class="id7-koan-spinner__bottom" clip-path="url(#koan-clip)" xlink:href="#bottom" fill="#808080" />
+    <use class="id7-koan-spinner__middle" clip-path="url(#koan-clip)" xlink:href="#middle" stroke="#cfcfcf"
+        stroke-width="2" />
+    <use class="id7-koan-spinner__neon id7-koan-spinner__neon--top" clip-path="url(#koan-clip)" xlink:href="#neon-top"
+        stroke="#14b3b3" stroke-width="1.5" />
+    <use class="id7-koan-spinner__neon id7-koan-spinner__neon--middle" clip-path="url(#koan-clip)"
+        xlink:href="#neon-middle" stroke="#14b3b3" stroke-width="1.5" />
+    <use class="id7-koan-spinner__neon id7-koan-spinner__neon--bottom" clip-path="url(#koan-clip)"
+        xlink:href="#neon-bottom" stroke="#14b3b3" stroke-width="1.5" />
+
+</svg>
 
 <script>
     fetch('/api/results',{
