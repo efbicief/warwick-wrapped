@@ -8,7 +8,12 @@
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
     <script src="{{url_for('static', filename='js/jump.js')}}" async></script>
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
-
+    <script>
+        function logout(){
+            document.cookie = 'uuid=; Max-Age=0; path=/; domain=' + location.hostname;
+            window.location.replace("/");
+        }
+    </script>
     <title>Warwick - Wrapped</title>
 </head>
 <body id="doc-body">
@@ -32,6 +37,7 @@
 
             <div class="header-topper">
                 <ul>
+                    <li><button class="clean-link unstyledButton" onclick="logout()">Logout</a></li>
                     <li><a class="clean-link" href="/PrivacyPolicy">Privacy Notice</a></li>
                 </ul>
 
@@ -117,6 +123,7 @@
 
             <div class="header-topper">
                 <ul>
+                    <li><button class="clean-link unstyledButton" onclick="logout()">Logout</a></li>
                     <li><a class="clean-link" href="/privacypolicy">Privacy Notice</a></li>
                 </ul>
 

@@ -61,6 +61,7 @@ header{
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    gap: 10px;
     padding: 0;
     margin: 0;
     font-size: small;
@@ -233,7 +234,11 @@ header{
     display: none;
 }
 
-
+.unstyledButton{
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
 
 
 /* 

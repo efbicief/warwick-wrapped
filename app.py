@@ -17,7 +17,11 @@ app.config['TESTING'] = True
 @app.route("/")
 def home():
     """Homepage the first page visited."""
-    return render_template('homepage.html')
+    uuid = sso.get_uuid_from_cookie()
+    if uuid is None:
+        return render_template('homepage.html')
+    else:
+        return redirect("/results", code=302)
 
 @app.route("/PrivacyPolicy")
 def privacy():
