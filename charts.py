@@ -64,7 +64,7 @@ def graph_before_deadline(deadlines) -> Axes:
 
 @save_chart
 def module_grade_histogram(modules) -> Axes:
-    bins = [i*2 for i in range(51)]
+    bins = [i*3 for i in range(34)]
     marks = [i[4] for i in modules]
     
     _, axes = plt.subplots()
@@ -73,5 +73,12 @@ def module_grade_histogram(modules) -> Axes:
     axes.set_title('Your module grades distribution')
     axes.set_xlabel('Mark')
     axes.set_ylabel('Number of modules')
+
+    sigma = np.std(marks)
+    mu = np.mean(marks)
+    y = 34 * ((1 / (np.sqrt(2 * np.pi) * sigma)) * np.exp(-0.5 * (1 / sigma * (bins - mu))**2))
+    axes.plot(bins, y)
+    print(bins,marks,y)
+
 
     return axes
