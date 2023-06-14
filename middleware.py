@@ -8,7 +8,7 @@ from dateutil.parser import parse
 import human_readable as hr
 
 import sso
-from charts import test_chart
+from charts import test_chart, graph_before_deadline, module_grade_histogram
 from dataFormat import User, SVG, Category, ThreePart, FivePart,Page
 
 
@@ -51,6 +51,7 @@ def pack_deadlines(ass:AssignmentResponce)->Union[Deadline,None]:
         Coursework Name
         Due date (exclusive of alowances)
         Due date (inclusive of alowances)
+        Submitted date
         is late , boolean flag """
     module = ass['module']['name']
     cw_name = ass['name']
@@ -79,10 +80,6 @@ def pack_module(module:ModuleResponce)->Union[Module,None]:
 @default_wrap_fac(('Unknown', True))
 def pack_monitoring_point(point:PointResponce)->MonitoringPoint:
     """Check monitoring points by name and attendance"""
-    #TODO remove
-    print("Point")
-    bigpp(point)
-    print()
     name = point['point']['name']
     attended = point['state'] == "attended"
     if name is None or attended is None:
@@ -210,15 +207,15 @@ def missed_monitoring(points:list[MonitoringPoint]):
     return FivePart("You missed", str(missed), "out of", str(len(points)), "monitoring points")
 
 
-#@defaultWrapFac(User("Bad User", "BEng Cyber-hacking", "0", []))
+@default_wrap_fac(User("Bad User", "BEng Cyber-hacking", "0", []))
 def get_data(uuid) -> User:
     """Get all the data for a user"""
     member = sso.get_user_info(uuid)
-    course_details = member.get("studentCourseDetails")[0]
+    course_details = member.get("studentCourseDetails", [])[-1]
     assignments = sso.get_assignments(uuid)
     begin = course_details.get("beginDate", "2023")[:4]
     end = course_details.get("endDate", "2023")[:4]
-    attendance = sso.get_attendance(int(begin), int(end), uuid)
+    attendance = sso.get_attendance(int(begin), int(end)+1, uuid)
 
     upcoming_assignments_aep = assignments.get("enrolledAssignments")
     upcoming_assignments = [ass for ass in upcoming_assignments_aep if \
@@ -237,7 +234,7 @@ def get_data(uuid) -> User:
     deadlines = [ded for ded in deadlines_none if ded is not None]
 
     # List of (module_code, module_name, year, cats, mark) for modules
-    modules_raw = course_details.get("moduleRegistrations")
+    modules_raw = course_details.get("moduleRegistrations", dict())
     modules_none = [pack_module(mod) for mod in modules_raw]
     modules = [mod for mod in modules_none if mod is not None]
 
@@ -257,8 +254,6 @@ def get_data(uuid) -> User:
             avg_mark(marks),
             min_mark(marks),
             max_mark(marks),
-            test_chart(),
-            test_chart()
         ]
     )
 
@@ -269,7 +264,8 @@ def get_data(uuid) -> User:
         [
             get_latest_ontime_deadline(deadlines),
             get_num_lates(deadlines),
-            avg_before_deadline(deadlines)
+            avg_before_deadline(deadlines),
+            graph_before_deadline(deadlines)
         ]
     )
 
@@ -280,7 +276,8 @@ def get_data(uuid) -> User:
         [
             avg_module_mark(modules),
             best_module(modules),
-            worst_module(modules)
+            worst_module(modules),
+            module_grade_histogram(modules)
         ]
     )
 
@@ -296,10 +293,9 @@ def get_data(uuid) -> User:
     )
 
 
-
     return User(
-        member.get("firstName"),
-        course_details.get("currentRoute").get("name"),
+        member.get("firstName", "Unknown first name"),
+        course_details.get("currentRoute", dict()).get("name", "Unknown course"),
         course_details.get("levelCode", 0),
         [
             assignment_category,

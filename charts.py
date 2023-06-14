@@ -3,8 +3,12 @@ import random
 import os
 from typing import Callable
 
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
+
+import numpy as np
 
 from dataFormat import Image
 
@@ -40,4 +44,41 @@ def test_chart()->Axes:
     axes.set_title('Test Chart')
     axes.set_xlabel('x')
     axes.set_ylabel('y')
+    return axes
+
+@save_chart
+def graph_before_deadline(deadlines) -> Axes:
+    deadlines.sort(key=lambda x: x[4])
+    time_deltas = [(ded[3] - ded[4]).total_seconds()/86400 for ded in deadlines] # time_delta in days
+
+    _, axes = plt.subplots()
+
+    axes.scatter(range(len(time_deltas)), time_deltas)
+    axes.set_title('Time before deadline for each submission')
+    axes.set_xlabel('Submission number')
+    axes.set_ylabel('Time before deadline (days)')
+    axes.set_ylim(-5,14)
+    axes.plot(np.poly1d(time_deltas))
+
+    return axes
+
+@save_chart
+def module_grade_histogram(modules) -> Axes:
+    bins = [i*3 for i in range(34)]
+    marks = [i[4] for i in modules]
+    
+    _, axes = plt.subplots()
+
+    axes.hist(marks, bins)
+    axes.set_title('Your module grades distribution')
+    axes.set_xlabel('Mark')
+    axes.set_ylabel('Number of modules')
+
+    sigma = np.std(marks)
+    mu = np.mean(marks)
+    y = 34 * ((1 / (np.sqrt(2 * np.pi) * sigma)) * np.exp(-0.5 * (1 / sigma * (bins - mu))**2))
+    axes.plot(bins, y)
+    print(bins,marks,y)
+
+
     return axes

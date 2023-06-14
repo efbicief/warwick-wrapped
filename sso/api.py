@@ -133,13 +133,10 @@ def get_attendance(begin:int, end:int, oauth_uuid=None):
 
     end_data = []
     for year in range(begin, end):
+        print(f"This is year: {year}")
         url_reqd = f"https://tabula.warwick.ac.uk/api/v1/member/me/attendance/{year}"
         resp = oauth.request("GET", url_reqd)
         end_data.append(resp.json())
-
-    print("attendance")
-    pp(end_data)
-    print()
 
     return end_data
 
