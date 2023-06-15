@@ -78,7 +78,4 @@ def module_grade_histogram(modules) -> Axes:
     mu = np.mean(marks)
     y = 34 * ((1 / (np.sqrt(2 * np.pi) * sigma)) * np.exp(-0.5 * (1 / sigma * (bins - mu))**2))
     axes.plot(bins, y)
-    print(bins,marks,y)
-
-
     return axes

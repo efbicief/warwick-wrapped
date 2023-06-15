@@ -210,11 +210,10 @@ def missed_monitoring(points:list[MonitoringPoint]):
     return FivePart("You missed", str(missed), "out of", str(len(points)), "monitoring points")
 
 
-# @default_wrap_fac(User("Bad User", "BEng Cyber-hacking", "0", []))
+@default_wrap_fac(User("Bad User", "BEng Cyber-hacking", "0", []))
 def get_data(uuid) -> User:
     """Get all the data for a user"""
     member = sso.get_user_info(uuid)
-    bigpp(member) 
     course_details = member.get("studentCourseDetails", [])[-1]
     assignments = sso.get_assignments(uuid)
     begin = course_details.get("beginDate", "2023")[:4]

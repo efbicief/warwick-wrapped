@@ -85,22 +85,23 @@ def render_results():
     """The primary page of the web application."""
     args =  request.args.to_dict()
     share_code=args.get("ref")
+    is_shared = False
     uuid=None
     if share_code is not None:
         uuid = db_data.get_token_for_share_code(share_code)
-        print(uuid)
-
+        is_shared = True
     try:
         if uuid is None:
             uuid = sso.get_uuid_from_cookie()
     except TypeError:
         return redirect("/", code=302)
     if uuid is None:
-        return redirect("/", code=302) 
-    print("print_debug", uuid)
+        response = redirect("/", code=302) 
+        response.set_cookie( "uuid","clear",expires=0 )
+        return response
     user_data:User=middleware.convert_to_page(middleware.get_data(uuid))
 
-    return render_template('Results.html',userData=user_data)
+    return render_template('Results.html',userData=user_data,isShared=is_shared)
 
 @app.route("/api/share")
 def get_share_link():
@@ -118,8 +119,6 @@ def get_chart(chart_id:str):
     response.headers.set('Content-Type', 'image/png')
     response.headers.set('Content-Disposition', 'attachment', filename=f'{chart_id}.png')
     return response
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)

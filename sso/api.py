@@ -161,4 +161,9 @@ def _get_oauth_session_for_request(oauth_uuid=None):
     return oauth
 
 def get_uuid_from_cookie():
-    return request.cookies.get("uuid")
+    token= request.cookies.get("uuid")
+    if token is None:
+        return None
+    if db_data.get_token_for_uuid(token) is None:
+        return None
+    return token
