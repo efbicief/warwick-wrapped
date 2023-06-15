@@ -84,11 +84,20 @@
     }else{
         url = '/api/results'
     }
+
     fetch(url,{
         'credentials': 'same-origin'
     }).then(function(response){
+        console.log(response);
+        if (response.redirected){
+            window.location.replace(response.url)
+            return null
+        }
         return response.text()
     }).then(function(body){
+        if (body==null){
+            return
+        }
         document.write(body)
     })
 </script>

@@ -571,3 +571,15 @@ img.result-group{
     height: 30px;
     margin: 5px;
 }
+
+.error{
+    width: 100%;
+}
+.error-innder{
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    background-color: red;
+    color: white;
+    font-size: xx-large;
+}

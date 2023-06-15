@@ -91,12 +91,12 @@ def render_results():
         uuid = db_data.get_token_for_share_code(share_code)
         is_shared = True
     try:
-        if uuid is None:
+        if not is_shared:
             uuid = sso.get_uuid_from_cookie()
     except TypeError:
-        return redirect("/", code=302)
+        return redirect("/?error=true", code=302)
     if uuid is None:
-        response = redirect("/", code=302) 
+        response = redirect("/?error=true", code=302) 
         response.set_cookie( "uuid","clear",expires=0 )
         return response
     user_data:User=middleware.convert_to_page(middleware.get_data(uuid))
@@ -108,7 +108,7 @@ def get_share_link():
     """Returns a share link."""
     uuid = sso.get_uuid_from_cookie()
     if uuid is None:
-        return redirect("/", code=302) 
+        return redirect("/?error=true", code=302) 
     return middleware.get_share_link(uuid)
 
 @app.route("/charts/<chart_id>")

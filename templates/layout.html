@@ -9,6 +9,8 @@
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
 
     <title>Document</title>
+
+
 </head>
 <body>
 
@@ -36,6 +38,7 @@
 
     </header>
     <div class="content">
+        <div class="error"></div>
         {% block content %}{% endblock %}    
     </div>
 
@@ -47,4 +50,13 @@
             <a href="https://www.youtube.com/watch?v=wkEiZWLW96o" class="clean-link milk_Mondays"><img class="footer-logo" src="{{url_for('static', filename='images/MilkSticker.svg')}}" > </a>        
         </footer>
 </body>
+
+<script>
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const refrence=urlParams.get("error");
+    if (refrence){
+        document.querySelector(".error").innerHTML="<div class='error-innder'>UNKNOWN ERROR</div>";
+    }
+</script>
 </html>
