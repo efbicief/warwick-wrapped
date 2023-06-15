@@ -47,7 +47,7 @@ def get_authorised_oauth():
     response.set_cookie( "uuid",uuid )
     return response
 
-
+#TODO Remove this endpoint
 @app.route("/oauth/endpoint")
 def get_endpoint():
     """A temporary page to test the OAuth endpoint."""

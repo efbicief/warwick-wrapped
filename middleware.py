@@ -175,7 +175,9 @@ def get_num_lates(deadlines:list[Deadline]) -> ThreePart:
 def avg_before_deadline(deadlines:list[Deadline]) -> ThreePart:
     """Get the average time submitted before the deadline"""
     time_deltas = [ded[3]-ded[4] for ded in deadlines]
-    avg_delta = sum(time_deltas, timedelta(0)) / len(time_deltas)
+    time_deltas.sort()
+    avg_delta = time_deltas[len(time_deltas)//2]
+    # avg_delta = sum(time_deltas, timedelta(0)) / len(time_deltas)
     return ThreePart("On average you submitted", hr.time_delta(avg_delta), "before the deadline")
 
 def avg_module_mark(modules:list[Module]):
