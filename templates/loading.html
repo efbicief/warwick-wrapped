@@ -75,7 +75,16 @@
 </svg>
 
 <script>
-    fetch('/api/results',{
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const refrence=urlParams.get("ref")
+    let url='';
+    if (refrence){
+        url = '/api/results?ref='+refrence
+    }else{
+        url = '/api/results'
+    }
+    fetch(url,{
         'credentials': 'same-origin'
     }).then(function(response){
         return response.text()

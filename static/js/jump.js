@@ -232,3 +232,17 @@ function buttonDown(){
         setTimeout( ()=> canClick=true ,500 );
     }
 }
+
+function copyData(){
+    navigator.clipboard.writeText(document.getElementById("share-link").value).then(()=>{})
+}
+
+function getSharable(){
+    fetch("/api/share").then((response)=>{
+        return response.json()
+    }).then((data)=>{
+        document.getElementById("share-link").value=data["link"]
+    }).catch((err)=>{
+        document.getElementById("share-link").value="Error"
+    })
+}

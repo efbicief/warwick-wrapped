@@ -15,6 +15,7 @@ class Database:
     def initialise_new(self):
         self.cursor.execute("CREATE TABLE IF NOT EXISTS uuid_token (uuid TEXT PRIMARY KEY, token TEXT)")
         self.cursor.execute("CREATE TABLE IF NOT EXISTS token_secret (token TEXT PRIMARY KEY, secret TEXT)")
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS share_tokens (share_code TEXT PRIMARY KEY, token TEXT)")
         self.conn.commit()
 
     def get_token_for_uuid(self, uuid: str):
@@ -38,3 +39,14 @@ class Database:
     def add_secret_for_token(self, token: str, secret: str):
         self.cursor.execute("INSERT INTO token_secret VALUES (?, ?)", (token, secret))
         self.conn.commit()
+
+    def add_token_share_code(self, share_code: str, token: str):
+        self.cursor.execute("INSERT INTO share_tokens VALUES (?, ?)", (share_code, token))
+        self.conn.commit()
+    
+    def get_token_for_share_code(self, share_code: str):
+        self.cursor.execute("SELECT token FROM share_tokens WHERE share_code=?", (share_code,))
+        resp = self.cursor.fetchone()
+        if resp is None:
+            return None
+        return resp[0]

@@ -529,3 +529,45 @@ img.result-group{
     width: 15vw;
     height: auto;
 }
+
+.share-button{
+    background-color: #1F857E;
+    margin-top: 0;
+}
+
+.share-wrapper{
+ display: flex;
+ flex-direction: row;
+ margin-top: 20px;
+}
+
+.share-button:has(+ .share-link){
+    border-radius: 5px 0px 0px 5px;
+    margin-right: 0;
+}
+.share-link{
+    padding: 0;
+    border: black 2px solid;
+    padding: 15px;
+
+    border-left: none;
+    border-right: none;
+    flex-grow: 1;
+    width: 50vws;
+}
+
+.share-link-copy{
+    padding: 0;
+    border: black 2px solid;
+    border-radius: 0px 5px 5px 0px;
+    background-color: none;
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.bi-clipboard{
+    width: 30px;
+    height: 30px;
+    margin: 5px;
+}

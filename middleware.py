@@ -1,6 +1,7 @@
 """Handles the majoirty of the data processing and formatting for the frontend."""
 from functools import reduce
 from typing import NewType, Union
+import uuid as uuidLib
 
 from pprint import pprint as bigpp
 from datetime import datetime, timedelta
@@ -8,9 +9,11 @@ from dateutil.parser import parse
 import human_readable as hr
 
 import sso
-from charts import test_chart, graph_before_deadline, module_grade_histogram
+from charts import graph_before_deadline, module_grade_histogram
 from dataFormat import User, SVG, Category, ThreePart, FivePart,Page
+from sso.config import CONFIG
 
+BASE_URL = CONFIG.BASE_URL
 
 CourseworkMark = NewType( "CourseworkMark", tuple[str, str, int])
 Deadline = NewType("Deadlines", tuple[str, str, datetime, datetime, datetime, bool])
@@ -207,10 +210,11 @@ def missed_monitoring(points:list[MonitoringPoint]):
     return FivePart("You missed", str(missed), "out of", str(len(points)), "monitoring points")
 
 
-@default_wrap_fac(User("Bad User", "BEng Cyber-hacking", "0", []))
+# @default_wrap_fac(User("Bad User", "BEng Cyber-hacking", "0", []))
 def get_data(uuid) -> User:
     """Get all the data for a user"""
     member = sso.get_user_info(uuid)
+    bigpp(member) 
     course_details = member.get("studentCourseDetails", [])[-1]
     assignments = sso.get_assignments(uuid)
     begin = course_details.get("beginDate", "2023")[:4]
@@ -358,3 +362,11 @@ def convert_to_page(user:User)->User:
         pages.append(Page(current_page))
         i.items=pages
     return user
+
+def get_share_link(uuid:str)->dict:
+    """Returns a share link for the user"""
+    myuuid = uuidLib.uuid4()
+    print(myuuid)
+    sso.db_data.add_token_share_code(str(myuuid), uuid)
+    print(myuuid)
+    return {"link":BASE_URL+"/results?ref="+str(myuuid)}

@@ -3,11 +3,12 @@ This is the main file for the web application.
 It contains the routes for the webpages and the functions that are
 called when the user visits a page.
 """
-from flask import Flask, render_template ,redirect,make_response,url_for
+from flask import Flask, render_template ,redirect,make_response,request
 import sso
 import middleware
 from dataFormat import User
 from charts import load_chart
+from sso import db_data
 
 app = Flask(__name__)
 app.config['ENV'] = 'development'
@@ -76,24 +77,38 @@ def get_upcoming_events():
 @app.route("/results")
 def loading():
     """Renders the laodin page that calls /api/results."""
+
     return render_template('loading.html')
 
 @app.route("/api/results")
 def render_results():
     """The primary page of the web application."""
+    args =  request.args.to_dict()
+    share_code=args.get("ref")
+    uuid=None
+    if share_code is not None:
+        uuid = db_data.get_token_for_share_code(share_code)
+        print(uuid)
+
     try:
-        uuid = sso.get_uuid_from_cookie()
+        if uuid is None:
+            uuid = sso.get_uuid_from_cookie()
     except TypeError:
         return redirect("/", code=302)
     if uuid is None:
         return redirect("/", code=302) 
+    print("print_debug", uuid)
     user_data:User=middleware.convert_to_page(middleware.get_data(uuid))
-    # try:
-    #     userData=middleware.convert_to_page(middleware.get_data(uuid))
-    # except:
-    #     return redirect("/", code=302) 
 
     return render_template('Results.html',userData=user_data)
+
+@app.route("/api/share")
+def get_share_link():
+    """Returns a share link."""
+    uuid = sso.get_uuid_from_cookie()
+    if uuid is None:
+        return redirect("/", code=302) 
+    return middleware.get_share_link(uuid)
 
 @app.route("/charts/<chart_id>")
 def get_chart(chart_id:str):
