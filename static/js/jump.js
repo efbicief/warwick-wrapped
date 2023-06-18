@@ -88,6 +88,12 @@ class BlockResult{
         setTimeout(() => this.nextPage.call(this), this.timePerPage[this.position-1]*1000);
     }
 
+    hidePages(){
+        for (var x of this.pages){
+            x.setAttribute("data-shown","false");
+        }
+    }
+
     /**
      * animate the current block result
      */
@@ -145,6 +151,7 @@ class mediaController{
         if (this.audio){
             if (this.audio.volume<=0.1){
                 this.audio.pause();
+                this.audio=undefined;
                 return
             }
             this.audio.volume-=0.1;
@@ -157,6 +164,11 @@ class mediaController{
         if (this.blockPosition===this.resultBlocks.length+1){
             document.getElementsByClassName("button-control-group")[0].setAttribute("data-shown","true");
             this.fadeOutAudio();
+            if (document.documentElement.exitFullscreen) {
+                document.documentElement.exitFullscreen();
+            } else if (document.documentElement.webkitExitFullscreen) { /* Safari */
+                document.documentElement.webkitExitFullscreen();
+            }
             return
         }
         this.resultBlocks[this.blockPosition-1].animate();
@@ -193,12 +205,14 @@ class mediaController{
         
     }
 
+    hidePages(){
+        for (var x of this.resultBlocks){
+            x.hidePages();
+        }
+    }
 
 
-    animate(){
-        
-        this.audio;
-
+    animate2(){
         if (! this.audio){
             this.audio = new Audio('static/images/upbeat-corporate.mp3');
         }
@@ -207,6 +221,20 @@ class mediaController{
         }
 
         this.nextBlock()
+    }
+
+    animate(){
+        
+        this.audio;
+        document.getElementsByClassName("button-control-group")[0].setAttribute("data-shown","false");
+        this.hidePages();
+        setTimeout( ()=>this.animate2.call(this),200);
+
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
+            document.documentElement.webkitRequestFullscreen();
+        }
     }
 }
 

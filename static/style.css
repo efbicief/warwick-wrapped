@@ -178,13 +178,14 @@ header{
     display: block;
     margin: 0 10px;
     width: 120px;
+    flex-basis: 30vw;
+
     display: flex;
     justify-content: center;
     align-items: center;
 }
 .footer-logo{
     max-height: 40px;
-
 }
 
 .Start-button{
@@ -553,7 +554,7 @@ img.result-group{
     border-left: none;
     border-right: none;
     flex-grow: 1;
-    width: 50vws;
+    width: 50vw;
 }
 
 .share-link-copy{
