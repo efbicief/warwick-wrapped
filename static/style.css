@@ -61,6 +61,7 @@ header{
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    align-items: center;
     gap: 10px;
     padding: 0;
     margin: 0;
@@ -239,6 +240,8 @@ header{
     background-color: transparent;
     border: none;
     cursor: pointer;
+    margin: 0;
+    padding: 0;
 }
 
 
@@ -532,8 +535,12 @@ img.result-group{
 }
 
 .share-button{
+    white-space: nowrap;
     background-color: #1F857E;
     margin-top: 0;
+    border-radius: 5px 0px 0px 5px;
+    margin-right: 0;
+    border: none;
 }
 
 .share-wrapper{
@@ -542,12 +549,7 @@ img.result-group{
  margin-top: 20px;
 }
 
-.share-button:has(+ .share-link){
-    border-radius: 5px 0px 0px 5px;
-    margin-right: 0;
-}
 .share-link{
-    padding: 0;
     border: black 2px solid;
     padding: 15px;
 
@@ -595,5 +597,33 @@ img.result-group{
     }
     .lower-header{
         padding: 10px;
+        margin:0 ;
+    }
+
+    .share-wrapper{
+        flex-direction: column;
+        align-items: stretch;
+        width: 80vw;
+    }
+
+    .share-button{
+        background-color: #1F857E;
+        margin: 0;
+        border-radius: 5px 5px 0px 0px;
+    }
+
+    .share-link{
+        border-top: none;
+        border-bottom: none;
+        width: auto;
+        border-left: black 2px solid ;
+        border-right: black 2px solid ;
+    }
+    
+    .share-link-copy{
+        margin: 0;
+        border: black 2px solid;
+        aspect-ratio: auto;
+        border-radius: 0px 0px 5px 5px;
     }
 }

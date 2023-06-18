@@ -377,4 +377,4 @@ def get_share_link(uuid:str)->dict:
     print(myuuid)
     sso.db_data.add_token_share_code(str(myuuid), uuid)
     print(myuuid)
-    return {"link":BASE_URL+"/results?ref="+str(myuuid)}
+    return {"link":"https://"+BASE_URL+"/results?ref="+str(myuuid)}
