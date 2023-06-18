@@ -371,7 +371,7 @@ def convert_to_page(user:User)->User:
         i.items=pages
     return user
 
-def get_share_link(uuid:str)->dict:
+def get_share_link(uuid:str) -> dict:
     """Returns a share link for the user"""
     myuuid = uuidLib.uuid4()
     print(myuuid)
