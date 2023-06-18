@@ -584,3 +584,16 @@ img.result-group{
     color: white;
     font-size: xx-large;
 }
+
+
+@media (max-width: 500px){
+    .citations{
+        font-size: xx-small;
+    }
+    .lower-footer{
+        display: none;
+    }
+    .lower-header{
+        padding: 10px;
+    }
+}
