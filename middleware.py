@@ -183,7 +183,8 @@ def avg_before_deadline(deadlines:list[Deadline]) -> ThreePart:
 def avg_module_mark(modules:list[Module]):
     """Get the average module mark from a list of modules"""
     marks = [i[4] for i in modules]
-    avg = sum(marks)/len(marks)
+    if len(marks) == 0: avg = 0
+    else: avg = sum(marks)/len(marks)
     return ThreePart("Your average module mark was", str(round(avg,1)), "")
 
 def best_module(modules:list[Module]):
@@ -212,7 +213,7 @@ def missed_monitoring(points:list[MonitoringPoint]):
     return FivePart("You missed", str(missed), "out of", str(len(points)), "monitoring points")
 
 
-@default_wrap_fac(User("Bad User", "BEng Cyber-hacking", "0", []))
+#@default_wrap_fac(User("Bad User", "BEng Cyber-hacking", "0", []))
 def get_data(uuid) -> User:
     """Get all the data for a user"""
     member = sso.get_user_info(uuid)
@@ -250,41 +251,50 @@ def get_data(uuid) -> User:
             monitoring_points.append(pack_monitoring_point(point))
 
     # Assignments category
-    assignment_category = Category(
-        "Assignments",
-        assignmentsSVG,
-        [
-            num_upcoming_ass(upcoming_assignments),
-            num_completed_ass(completed_assignments),
-            avg_mark(marks),
-            min_mark(marks),
-            max_mark(marks),
-        ]
-    )
+    if len(marks) == 0:
+        assignment_category = None
+    else:
+        assignment_category = Category(
+            "Assignments",
+            assignmentsSVG,
+            [
+                num_upcoming_ass(upcoming_assignments),
+                num_completed_ass(completed_assignments),
+                avg_mark(marks),
+                min_mark(marks),
+                max_mark(marks),
+            ]
+        )
 
     # Deadlines category
-    deadlines_category = Category(
-        "Deadlines",
-        deadlinesSVG,
-        [
-            get_latest_ontime_deadline(deadlines),
-            get_num_lates(deadlines),
-            avg_before_deadline(deadlines),
-            graph_before_deadline(deadlines)
-        ]
-    )
+    if len(deadlines) == 0:
+        deadlines_category = None
+    else:
+        deadlines_category = Category(
+            "Deadlines",
+            deadlinesSVG,
+            [
+                get_latest_ontime_deadline(deadlines),
+                get_num_lates(deadlines),
+                avg_before_deadline(deadlines),
+                graph_before_deadline(deadlines)
+            ]
+        )
 
     # Modules Category
-    modules_category = Category(
-        "Modules",
-        modulesSVG,
-        [
-            avg_module_mark(modules),
-            best_module(modules),
-            worst_module(modules),
-            module_grade_histogram(modules)
-        ]
-    )
+    if len(modules) == 0:
+        modules_category = None
+    else:
+        modules_category = Category(
+            "Modules",
+            modulesSVG,
+            [
+                avg_module_mark(modules),
+                best_module(modules),
+                worst_module(modules),
+                module_grade_histogram(modules)
+            ]
+        )
 
     # Overview category
     overview_category = Category(
@@ -298,16 +308,13 @@ def get_data(uuid) -> User:
     )
 
 
+    categories_none = [ assignment_category, deadlines_category, modules_category, overview_category ]
+    categories = [c for c in categories_none if c != None]
     return User(
         member.get("firstName", "Unknown first name"),
         course_details.get("currentRoute", dict()).get("name", "Unknown course"),
         course_details.get("levelCode", 0),
-        [
-            assignment_category,
-            deadlines_category,
-            modules_category,
-            overview_category
-        ]
+        categories
     )
 
 
