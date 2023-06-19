@@ -158,17 +158,20 @@ class mediaController{
             setTimeout(()=>this.fadeOutAudio.call(this),100);
         }
     }
+    exitFullscreen(){
+        if (document.documentElement.exitFullscreen) {
+            document.documentElement.exitFullscreen();
+        } else if (document.documentElement.webkitExitFullscreen) { /* Safari */
+            document.documentElement.webkitExitFullscreen();
+        }
+    }
 
     nextBlock(){
         this.goDown();
         if (this.blockPosition===this.resultBlocks.length+1){
             document.getElementsByClassName("button-control-group")[0].setAttribute("data-shown","true");
             this.fadeOutAudio();
-            if (document.documentElement.exitFullscreen) {
-                document.documentElement.exitFullscreen();
-            } else if (document.documentElement.webkitExitFullscreen) { /* Safari */
-                document.documentElement.webkitExitFullscreen();
-            }
+            setTimeout(()=>this.exitFullscreen(),500);
             return
         }
         this.resultBlocks[this.blockPosition-1].animate();
