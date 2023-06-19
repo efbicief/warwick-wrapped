@@ -213,7 +213,7 @@ def missed_monitoring(points:list[MonitoringPoint]):
     return FivePart("You missed", str(missed), "out of", str(len(points)), "monitoring points")
 
 
-#@default_wrap_fac(User("Bad User", "BEng Cyber-hacking", "0", []))
+@default_wrap_fac(User("Bad User", "BEng Cyber-hacking", "0", []))
 def get_data(uuid) -> User:
     """Get all the data for a user"""
     member = sso.get_user_info(uuid)
@@ -371,10 +371,10 @@ def convert_to_page(user:User)->User:
         i.items=pages
     return user
 
-def get_share_link(uuid:str)->dict:
+def get_share_link(uuid:str) -> dict:
     """Returns a share link for the user"""
     myuuid = uuidLib.uuid4()
     print(myuuid)
     sso.db_data.add_token_share_code(str(myuuid), uuid)
     print(myuuid)
-    return {"link":BASE_URL+"/results?ref="+str(myuuid)}
+    return {"link":"https://"+BASE_URL+"/results?ref="+str(myuuid)}

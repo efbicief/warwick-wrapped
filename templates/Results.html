@@ -82,17 +82,18 @@
         <footer>
             <div class="footer-topper"></div>
             <div class="images">
-                <div class="footer-logo-wrapper">
-                    <a href="https://uwcs.co.uk/"><img class="footer-logo"
-                        src="{{url_for('static', filename='images/uwcs_logo.svg')}}"></a>
-                </div>
-                <div class="footer-logo-wrapper">
-                    <img class="footer-logo" src="{{url_for('static', filename='images/github_logo.svg')}}">
-                </div>
-                <div class="footer-logo-wrapper">
-                    <a href="https://www.youtube.com/watch?v=wkEiZWLW96o" class="clean-link milk_Mondays"><img
-                        class="footer-logo" src="{{url_for('static', filename='images/MilkSticker.svg')}}"> </a>
-                </div>
+            <div class="footer-logo-wrapper">
+                <a href="https://uwcs.co.uk/"><img class="footer-logo"
+                    src="{{url_for('static', filename='images/uwcs_logo.svg')}}"></a>
+            </div>
+            <div class="footer-logo-wrapper">
+                <img class="footer-logo" src="{{url_for('static', filename='images/github_logo.svg')}}">
+            </div>
+            <div class="footer-logo-wrapper">
+                <a href="https://www.youtube.com/watch?v=wkEiZWLW96o" class="clean-link milk_Mondays"><img
+                    class="footer-logo" src="{{url_for('static', filename='images/MilkSticker.svg')}}"> </a>
+            </div>        
+            </div>
         </footer>
     </div>
 
@@ -162,7 +163,7 @@
 
         </header>
         <div class="content">
-            <h2>Thank you for using Warwick Wrapped!</h2>
+            <h2 class="lower-header">Thank you for using Warwick Wrapped!</h2>
 
             <div class="content-text">
                 Created by:
@@ -198,14 +199,16 @@
             {% endif %}
 
             <div class=" content-text citations">
-                Upbeat Corporate by JP Bianchini | https://soundcloud.com/jpmbianchini
-                Music promoted by https://www.free-stock-music.com
-                Creative Commons / Attribution 3.0 Unported License (CC BY 3.0)
-                https://creativecommons.org/licenses/by/3.0/deed.en_US
+Upbeat Corporate by JP Bianchini | https://soundcloud.com/jpmbianchini
+Music promoted by https://www.free-stock-music.com
+Creative Commons / Attribution 3.0 Unported License (CC BY 3.0)
+https://creativecommons.org/licenses/by/3.0/deed.en_US
             </div>
         </div>
         
-        <footer>
+        <footer class="lower-footer">
+            <div class="footer-topper"></div>
+            <div class="images">
             <div class="footer-logo-wrapper">
                 <a href="https://uwcs.co.uk/"><img class="footer-logo"
                     src="{{url_for('static', filename='images/uwcs_logo.svg')}}"></a>
@@ -216,6 +219,7 @@
             <div class="footer-logo-wrapper">
                 <a href="https://www.youtube.com/watch?v=wkEiZWLW96o" class="clean-link milk_Mondays"><img
                     class="footer-logo" src="{{url_for('static', filename='images/MilkSticker.svg')}}"> </a>
+            </div>        
             </div>
         </footer>
     </div>
