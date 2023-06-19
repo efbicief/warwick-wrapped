@@ -50,3 +50,7 @@ class Database:
         if resp is None:
             return None
         return resp[0]
+
+    def count_number_of_tokens(self):
+        self.cursor.execute("SELECT COUNT(*) FROM uuid_token")
+        return self.cursor.fetchone()[0]

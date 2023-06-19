@@ -167,3 +167,6 @@ def get_uuid_from_cookie():
     if db_data.get_token_for_uuid(token) is None:
         return None
     return token
+
+def get_user_count():
+    return db_data.count_number_of_tokens()

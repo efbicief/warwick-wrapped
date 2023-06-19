@@ -48,26 +48,32 @@ def get_authorised_oauth():
     return response
 
 #TODO Remove this endpoint
-@app.route("/oauth/endpoint")
-def get_endpoint():
-    """A temporary page to test the OAuth endpoint."""
-    uuid = sso.get_uuid_from_cookie()
-    assignments = sso.get_assignments(uuid)
-    member = sso.get_user_info(uuid)
-    user_submissions = sso.get_assignments(uuid)
+# @app.route("/oauth/endpoint")
+# def get_endpoint():
+#     """A temporary page to test the OAuth endpoint."""
+#     uuid = sso.get_uuid_from_cookie()
+#     assignments = sso.get_assignments(uuid)
+#     member = sso.get_user_info(uuid)
+#     user_submissions = sso.get_assignments(uuid)
 
-    print("print_debug", middleware.get_data(uuid))
+#     print("print_debug", middleware.get_data(uuid))
 
-    assignment_names = []
-    for item in assignments['enrolledAssignments']:
-        assignment_names.append(item['name'])
-    for item in assignments['historicAssignments']:
-        assignment_names.append(item['name'])
+#     assignment_names = []
+#     for item in assignments['enrolledAssignments']:
+#         assignment_names.append(item['name'])
+#     for item in assignments['historicAssignments']:
+#         assignment_names.append(item['name'])
 
-    return render_template('assignments.html',\
-                        assignments=assignment_names,\
-                        member=member,\
-                        submissions=user_submissions)
+#     return render_template('assignments.html',\
+#                         assignments=assignment_names,\
+#                         member=member,\
+#                         submissions=user_submissions)
+
+@app.route("/user/count")
+def get_user_count():
+    """Returns the number of users."""
+    userCount= sso.get_user_count()
+    return render_template('userCount.html',userCount=userCount)
 
 @app.route("/oauth/tabula/events/")
 def get_upcoming_events():
