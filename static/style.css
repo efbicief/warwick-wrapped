@@ -182,6 +182,25 @@ header{
     justify-content: center;
     align-items: center;
 }
+
+footer[data-special-case="true"] .footer-logo-wrapper:nth-child(2){
+    order: 0;
+    width: 100vw;
+    margin: 20px;
+}
+
+footer[data-special-case="true"] .footer-logo-wrapper:nth-child(1){
+    order: 1;
+    width: 30vw;
+    margin-right: 10vw;
+
+}
+footer[data-special-case="true"] .footer-logo-wrapper:nth-child(3){
+    order: 2;
+    width: 30vw;
+    margin-left: 10vw;
+}
+
 .footer-logo{
     max-height: 40px;
 }

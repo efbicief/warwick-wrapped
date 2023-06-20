@@ -221,6 +221,7 @@ class mediaController{
     startAnimation(){
         this.startAudio();
         document.getElementsByClassName("button-control-group")[0].setAttribute("data-shown","false");
+        document.getElementsByClassName("top-footer")[0].setAttribute("data-special-case","false");
         for (var x of this.resultBlocks){
             x.hidePages();
         }
@@ -237,6 +238,8 @@ class mediaController{
     endAnimation(){
         this.fadeOutAudio();
         document.getElementsByClassName("button-control-group")[0].setAttribute("data-shown","true");
+        document.getElementsByClassName("top-footer")[0].setAttribute("data-special-case","true");
+
         if (document.exitFullscreen) {
             document.exitFullscreen();
         } else if (document.webkitExitFullscreen) { /* Safari */
