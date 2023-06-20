@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
-    <script src="{{url_for('static', filename='js/jump.js')}}" async></script>
+    <script src="{{url_for('static', filename='js/jump.js')}}" async defer></script>
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <script>
         function logout() {
@@ -77,7 +77,7 @@
 
 
             <div class="sign-in-wrapper">
-                <button class="Start-button sign-in" onclick="a.startAnimation()">START</button>
+                <button class="Start-button sign-in" onclick="startButtonClicked()">START</button>
             </div>
         </div>
 

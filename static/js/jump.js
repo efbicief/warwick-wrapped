@@ -274,6 +274,16 @@ a = new mediaController()
 addEventListener("resize", (event) => {a.resize();});
 var canClick = true;
 
+function startButtonClicked(){
+    if (a){
+        a.startAnimation();
+    }else
+    {
+        a = new mediaController()
+        a.startAnimation();
+    }
+}
+
 function buttonUp(){
     a.PreviousPage();
 }
