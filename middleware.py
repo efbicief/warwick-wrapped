@@ -9,7 +9,7 @@ from dateutil.parser import parse
 import human_readable as hr
 
 import sso
-from charts import graph_before_deadline, module_grade_histogram
+from charts import graph_before_deadline, module_grade_histogram,submission_hour_histogram
 from dataFormat import User, SVG, Category, ThreePart, FivePart,Page
 from sso.config import CONFIG
 
@@ -213,7 +213,7 @@ def missed_monitoring(points:list[MonitoringPoint]):
     return FivePart("You missed", str(missed), "out of", str(len(points)), "monitoring points")
 
 
-@default_wrap_fac(User("Bad User", "BEng Cyber-hacking", "0", []))
+# @default_wrap_fac(User("Bad User", "BEng Cyber-hacking", "0", []))
 def get_data(uuid) -> User:
     """Get all the data for a user"""
     member = sso.get_user_info(uuid)
@@ -279,7 +279,8 @@ def get_data(uuid) -> User:
                 get_latest_ontime_deadline(deadlines),
                 get_num_lates(deadlines),
                 avg_before_deadline(deadlines),
-                graph_before_deadline(deadlines)
+                graph_before_deadline(deadlines),
+                submission_hour_histogram(deadlines)
             ]
         )
 

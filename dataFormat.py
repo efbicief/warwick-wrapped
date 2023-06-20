@@ -54,7 +54,7 @@ class FivePart(DisplayItem):
 class Image(DisplayItem):
     """Class for generic images usiually charts"""
     url:str
-    size=2
+    size=2.5
     TYPE="Image"
 
 @dataclass

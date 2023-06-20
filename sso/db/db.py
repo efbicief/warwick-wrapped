@@ -53,7 +53,11 @@ class Database:
         return resp[0]
 
     def add_user_id(self, uuid_token: str, userId: str):
-        self.cursor.execute("INSERT INTO user_ids VALUES (?, ?)", (uuid_token, userId))
+        self.cursor.execute("SELECT * from user_ids WHERE userId=?", (userId,))
+        resp = self.cursor.fetchone()
+        if resp is not None:
+            return
+        self.cursor.execute("INSERT OR IGNORE INTO user_ids VALUES (?, ?)", (uuid_token, userId))
         self.conn.commit()
 
     def count_number_of_tokens(self):

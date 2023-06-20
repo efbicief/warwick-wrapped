@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 
 import numpy as np
-
 from dataFormat import Image
 
 
@@ -63,6 +62,22 @@ def graph_before_deadline(deadlines) -> Axes:
     return axes
 
 @save_chart
+def submission_hour_histogram(deadlines) -> Axes:
+    bins = [i for i in range(24)]
+    hours = [i[4].hour for i in deadlines]
+    _ , axes = plt.subplots()
+
+    default_x_ticks = range(len(bins)+1)
+    x = ["Midnight","","","","","","6am","","","","","","12pm","","","","","","6pm","","","","","","Midnight"]
+    axes.hist(hours, bins)
+    axes.set_title('Your submission time')
+    axes.set_xlabel('Hour')
+    axes.set_ylabel('Number of submissions')
+    plt.xticks(default_x_ticks, x)
+    return axes
+
+
+@save_chart
 def module_grade_histogram(modules) -> Axes:
     bins = [i*3 for i in range(34)]
     marks = [i[4] for i in modules]
@@ -79,3 +94,4 @@ def module_grade_histogram(modules) -> Axes:
     y = 34 * ((1 / (np.sqrt(2 * np.pi) * sigma)) * np.exp(-0.5 * (1 / sigma * (bins - mu))**2))
     axes.plot(bins, y)
     return axes
+

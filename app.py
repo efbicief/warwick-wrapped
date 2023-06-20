@@ -19,6 +19,7 @@ app.config['TESTING'] = True
 def home():
     """Homepage the first page visited."""
     uuid = sso.get_uuid_from_cookie()
+    print(uuid)
     if uuid is None:
         return render_template('homepage.html')
     else:
