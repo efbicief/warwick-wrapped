@@ -16,6 +16,7 @@ class Database:
         self.cursor.execute("CREATE TABLE IF NOT EXISTS uuid_token (uuid TEXT PRIMARY KEY, token TEXT)")
         self.cursor.execute("CREATE TABLE IF NOT EXISTS token_secret (token TEXT PRIMARY KEY, secret TEXT)")
         self.cursor.execute("CREATE TABLE IF NOT EXISTS share_tokens (share_code TEXT PRIMARY KEY, token TEXT)")
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS user_ids (uuid_token TEXT PRIMARY KEY, userId TEXT)")
         self.conn.commit()
 
     def get_token_for_uuid(self, uuid: str):
@@ -51,6 +52,10 @@ class Database:
             return None
         return resp[0]
 
+    def add_user_id(self, uuid_token: str, userId: str):
+        self.cursor.execute("INSERT INTO user_ids VALUES (?, ?)", (uuid_token, userId))
+        self.conn.commit()
+
     def count_number_of_tokens(self):
-        self.cursor.execute("SELECT COUNT(*) FROM uuid_token")
+        self.cursor.execute("SELECT COUNT(DISTINCT userId) FROM user_ids;")
         return self.cursor.fetchone()[0]

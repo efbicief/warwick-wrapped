@@ -102,7 +102,7 @@ def render_results():
     except TypeError:
         return redirect("/?error=true", code=302)
     if uuid is None:
-        response = redirect("/?error=true", code=302) 
+        response = redirect("/", code=302) 
         response.set_cookie( "uuid","clear",expires=0 )
         return response
     user_data:User=middleware.convert_to_page(middleware.get_data(uuid))

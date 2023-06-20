@@ -217,6 +217,8 @@ def missed_monitoring(points:list[MonitoringPoint]):
 def get_data(uuid) -> User:
     """Get all the data for a user"""
     member = sso.get_user_info(uuid)
+    id= member.get("universityId")
+    sso.db_data.add_user_id(uuid,id)
     course_details = member.get("studentCourseDetails", [])[-1]
     assignments = sso.get_assignments(uuid)
     begin = course_details.get("beginDate", "2023")[:4]
