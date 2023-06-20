@@ -75,20 +75,19 @@
 </svg>
 
 <script>
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const refrence=urlParams.get("ref")
+    const Loading_queryString = window.location.search;
+    const Loading_urlParams = new URLSearchParams(Loading_queryString);
+    const Loading_reference=Loading_urlParams.get("ref")
     let url='';
-    if (refrence){
-        url = '/api/results?ref='+refrence
+    if (Loading_reference){
+        url = '/api/results?ref='+Loading_reference
     }else{
         url = '/api/results'
     }
 
-    fetch(url,{
+    const loading_responce = fetch(url,{
         'credentials': 'same-origin'
     }).then(function(response){
-        console.log(response);
         if (response.redirected){
             window.location.replace(response.url)
             return null

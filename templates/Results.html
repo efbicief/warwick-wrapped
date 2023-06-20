@@ -12,7 +12,9 @@
     <script>
         function logout() {
             document.cookie = 'uuid=; Max-Age=0; path=/; domain=' + location.hostname;
-            window.location.replace("/");
+            setTimeout(function () {
+                window.location.replace("/");
+            }, 100);
         }
     </script>
     <title>Warwick - Wrapped</title>
@@ -75,7 +77,7 @@
 
 
             <div class="sign-in-wrapper">
-                <button class="Start-button sign-in" onclick="a.animate()">START</button>
+                <button class="Start-button sign-in" onclick="a.startAnimation()">START</button>
             </div>
         </div>
 

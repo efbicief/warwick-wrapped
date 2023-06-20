@@ -1,11 +1,21 @@
 
 class BlockResult{
-    constructor(HtmlObject){
-        this.htmlObject = HtmlObject;
+    constructor(htmlObject){
+        this.htmlObject = htmlObject;
+        this.basic= false
+        if (!this.htmlObject.classList.contains("result-block")){
+            this.basic=true
+            return
+        }
 
         this.title = this.htmlObject.querySelectorAll(".block-title")[0];
         this.results=this.htmlObject.querySelectorAll(".block-results")[0];
         this.pages = this.results.querySelectorAll(".block-results-page");
+
+        this.pagePosition=0;
+
+        this.page_width = this.pages[0].offsetWidth;
+        this.total_width = htmlObject.offsetWidth;
 
         this.timePerPage =  [...this.pages].map(x=> 
             2*x.getElementsByClassName("result-group").length +
@@ -17,90 +27,105 @@ class BlockResult{
             2 // title
             + this.timePerPage.reduce((a,b)=> a+b,0) // total elements
 
-        this.maxPosition=this.pages.length
-        this.position=0;
+
 
     }
-    /**
-     * Time provided to animate the scene when using this.animate
-     * 
-     * typical values are 2s for title
-     * 2s per key data point
-     * 5s per long animation
-     * @returns number of seconds 
-     */
+
+    getPagePosition(){
+        this.blockPosition = Math.floor(this.htmlObject.scrollLeft/this.page_width);
+    }
+
+    hScrollToBlock(pageNumber){
+        var scrollPosition = pageNumber*this.page_width;
+        this.results.scrollTo({
+            top: 0,
+            left: scrollPosition,
+            behavior: "smooth",
+          });
+    }
+
+    scrollLeft(){
+        this.getPagePosition();
+        if (this.pagePosition>0){
+            this.pagePosition-=1;
+            this.hScrollToBlock(this.pagePosition);
+        }
+    }
+
+    scrollRight(){
+        this.getPagePosition();
+        if (this.pagePosition<this.pages.length-1){
+            this.pagePosition+=1;
+            this.hScrollToBlock(this.pagePosition);
+        }
+    }
+
+    canScrollLeft(){
+        if (this.basic){
+            return false
+        }
+        this.getPagePosition();
+        return this.pagePosition>0
+    }
+
+    canScrollRight(){
+        if (this.basic){
+            return false
+        }
+        this.getPagePosition();
+        return this.pagePosition<this.pages.length-1
+    }
+
     get_time_animate() {
         return this.size;
     }
 
-    /**
-     * Scroll the current page right first if the capacity is available.
-     * 
-     * If no scroll  capacity is available return 1 and don't scroll else 
-     * scroll and return 0
-     * @returns 1 or 0 if the page has scrolled
-     */
-    scrollLeft(){
-        if (this.position==1){
-            this.position-=1;
-            return 1
-        }
-        this.position-=1;
-        this.results.scrollBy({
-            top: 0,
-            left: -10,
-            behavior: "smooth",
-          });
-    }
-    /**
-     * Scroll the current page right first if the capacity is available.
-     * 
-     * If no scroll  capacity is available return 1 and don't scroll else 
-     * scroll and return 0
-     * @returns 1 or 0 if the page has scrolled
-     */
-    scrollRight(){ 
-        if (this.position==0){
-            this.position+=1;
-        }
-        if (this.position===this.maxPosition){
-            return 1
-        }
-        this.position+=1;
-        this.results.scrollBy({
-            top: 0,
-            left: 10,
-            behavior: "smooth",
-          });
-    }
-
-    nextPage(){
-        if (this.position!=0){
-            this.scrollRight()
-        }else{
-            this.position+=1
-        }
-        setTimeout(() => this.pages[this.position-1].setAttribute("data-shown","true"), 1000* (this.position!=1) );
-
-        if (this.position==this.maxPosition){
-            return;
-        }
-        setTimeout(() => this.nextPage.call(this), this.timePerPage[this.position-1]*1000);
-    }
-
     hidePages(){
+        if (this.basic){
+            return
+        }
+        this.title.setAttribute("data-shown","false");
+        this.pagePosition=0;
+        this.hScrollToBlock(0);
         for (var x of this.pages){
             x.setAttribute("data-shown","false");
         }
     }
 
-    /**
-     * animate the current block result
-     */
-    animate(){
-        this.title.setAttribute("data-shown","true");
+    animateLoop(callback){
+        this.getPagePosition();
+        if (this.canScrollRight()){
+            this.scrollRight();
+            this.pages[this.pagePosition].setAttribute("data-shown","true");
+            setTimeout(()=>this.animateLoop(callback),1000*this.timePerPage[this.pagePosition])
+        }else{
+            callback()
+        }
+    }
 
-        setTimeout(() => this.nextPage.call(this),3000);
+    animateInitial(callback){
+        this.pages[0].setAttribute("data-shown","true");
+        setTimeout(()=>this.animateLoop(callback),1000*this.timePerPage[0])
+    }
+
+    animate(callback){
+        if (this.basic){
+            setTimeout(()=>callback(),1000)
+            return
+        }
+        this.title.setAttribute("data-shown","true");
+        setTimeout(()=>this.animateInitial(callback),2000);
+    }
+
+
+
+    resize(){
+        if (this.basic){
+            return
+        }
+        this.page_width = this.pages[0].offsetWidth;
+        this.total_width = this.htmlObject.offsetWidth;
+        this.hScrollToBlock(this.pagePosition);
     }
 }
 
@@ -109,44 +134,78 @@ class mediaController{
     constructor(){
         //get data about structure of the pace
         this.blockPosition=0
-
+        
         var resultBlocksHTML=
-            document.getElementById("doc-body")
-                .getElementsByClassName("result-block");
+        document.getElementById("doc-body")
+        .getElementsByClassName("block");
+        
+        this.element_height=resultBlocksHTML[0].offsetHeight;
+        this.document_height=document.getElementById("doc-body").offsetHeight;
 
         this.resultBlocks = []
         for (var x of resultBlocksHTML){
             this.resultBlocks.push(new BlockResult(x))
         }
+
+        this.audio = null;
+    }
+    
+    get_Document_position(){
+        this.blockPosition = Math.floor(document.getElementById("doc-body").scrollTop/this.element_height);
     }
 
-    goDown(){
-        if (this.blockPosition===this.resultBlocks.length+1){
-            return 1
-        }
-        this.blockPosition+=1;
-        document.getElementById("doc-body").scrollBy({
-            top: 10,
+    v_Scroll_to_block(blockNumber){
+        var scrollPosition = blockNumber*this.element_height;
+        document.getElementById("doc-body").scrollTo({
+            top: scrollPosition,
             left: 0,
             behavior: "smooth",
           });
-        return 0;
-            }
-
-    goUp(){
-        if (this.blockPosition<=0){
-            return 1
-        }
-        this.blockPosition-=1;
-        document.getElementById("doc-body").scrollBy({
-            top: -10,
-            left: 0,
-            behavior: "smooth",
-          });
-        return 0;
     }
 
-    //slowly reduce audio volumne
+    scrollUp(){
+        this.get_Document_position();
+        if (this.blockPosition>0){
+            this.blockPosition-=1;
+            this.v_Scroll_to_block(this.blockPosition);
+        }
+    }
+
+    scrollDown(){
+        this.get_Document_position();
+        if (this.blockPosition<this.resultBlocks.length-1){
+            this.blockPosition+=1;
+            this.v_Scroll_to_block(this.blockPosition);
+        } 
+    }
+
+    NextPage(){
+        this.get_Document_position();
+        if (this.resultBlocks[this.blockPosition].canScrollRight()){
+            this.resultBlocks[this.blockPosition].scrollRight();
+        }else{
+            this.scrollDown();
+        }
+    }
+
+    PreviousPage(){
+        this.get_Document_position();
+        if (this.resultBlocks[this.blockPosition].canScrollLeft()){
+            this.resultBlocks[this.blockPosition].scrollLeft();
+        }else{
+            this.scrollUp();
+        }
+    }
+
+    startAudio(){
+        if (! this.audio){
+            this.audio = new Audio('static/images/upbeat-corporate.mp3');
+        }
+        if (this.audio.paused){
+            this.audio.play()
+        }
+    }
+
     fadeOutAudio(){
         if (this.audio){
             if (this.audio.volume<=0.1){
@@ -158,112 +217,71 @@ class mediaController{
             setTimeout(()=>this.fadeOutAudio.call(this),100);
         }
     }
-    exitFullscreen(){
-        if (document.documentElement.exitFullscreen) {
-            document.documentElement.exitFullscreen();
-        } else if (document.documentElement.webkitExitFullscreen) { /* Safari */
-            document.documentElement.webkitExitFullscreen();
-        }
-    }
 
-    nextBlock(){
-        this.goDown();
-        if (this.blockPosition===this.resultBlocks.length+1){
-            document.getElementsByClassName("button-control-group")[0].setAttribute("data-shown","true");
-            this.fadeOutAudio();
-            setTimeout(()=>this.exitFullscreen(),500);
-            return
-        }
-        this.resultBlocks[this.blockPosition-1].animate();
-        setTimeout(() => this.nextBlock.call(this),this.resultBlocks[this.blockPosition-1].get_time_animate()*1000);
-    }
-
-
-    nextPage(){
-        if (this.blockPosition== this.resultBlocks.length+1){
-            return
-        }
-        if (this.blockPosition <=0){
-            this.goDown();
-            return
-        }
-        let result=this.resultBlocks[this.blockPosition-1].scrollRight()
-        if (result ==1){
-            this.goDown();
-        }
-
-    }
-    previousPage(){
-        if (this.blockPosition <=0){
-            return;
-        }
-        if (this.blockPosition===this.resultBlocks.length+1){
-            this.goUp();
-            return;
-        } 
-        let result=this.resultBlocks[this.blockPosition-1].scrollLeft()
-        if (result ==1){
-            this.goUp();
-        }
-        
-    }
-
-    hidePages(){
+    startAnimation(){
+        this.startAudio();
+        document.getElementsByClassName("button-control-group")[0].setAttribute("data-shown","false");
         for (var x of this.resultBlocks){
             x.hidePages();
         }
-    }
-
-
-    animate2(){
-        if (! this.audio){
-            this.audio = new Audio('static/images/upbeat-corporate.mp3');
-        }
-        if (this.audio.paused){
-            this.audio.play()
-        }
-
-        this.nextBlock()
-    }
-
-    animate(){
-        
-        this.audio;
-        document.getElementsByClassName("button-control-group")[0].setAttribute("data-shown","false");
-        this.hidePages();
-        setTimeout( ()=>this.animate2.call(this),200);
-
         if (document.documentElement.requestFullscreen) {
             document.documentElement.requestFullscreen();
-        } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
+          } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
             document.documentElement.webkitRequestFullscreen();
+          } else if (document.documentElement.msRequestFullscreen) { /* IE11 */
+            document.documentElement.msRequestFullscreen();
+          }
+        setTimeout(()=>this.animate.call(this),300);
+    }
+
+    endAnimation(){
+        this.fadeOutAudio();
+        document.getElementsByClassName("button-control-group")[0].setAttribute("data-shown","true");
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+        }
+    }
+    
+
+
+    animate(){
+        this.get_Document_position();
+        if (this.blockPosition<this.resultBlocks.length-1){
+            this.blockPosition+=1;
+            this.v_Scroll_to_block(this.blockPosition);
+            this.resultBlocks[this.blockPosition].animate(()=>this.animate.call(this));
+        }else{
+            this.endAnimation();
+        }
+    }
+
+    resize(){
+        this.element_height=document.getElementById("doc-body").getElementsByClassName("block")[0].offsetHeight;
+        this.document_height=document.getElementById("doc-body").offsetHeight;
+        this.v_Scroll_to_block(this.blockPosition);
+        for (var x of this.resultBlocks){
+            x.resize();
         }
     }
 }
 
-
-
-var a=new mediaController()
-// setTimeout( ()=>a.animate.call(a),2000);
+var a = undefined;
+a = new mediaController()
+addEventListener("resize", (event) => {a.resize();});
 var canClick = true;
 
 function buttonUp(){
-    if (canClick){
-        a.previousPage()
-        canClick=false;
-        setTimeout( ()=> canClick=true ,500 );
-    }
-    
+    a.PreviousPage();
 }
 function buttonDown(){
-    
-    if (canClick){
-        a.nextPage()
-        canClick=false;
-        setTimeout( ()=> canClick=true ,500 );
-    }
+    a.NextPage();
 }
 
+//Keep (good)
 function copyData(){
     navigator.clipboard.writeText(document.getElementById("share-link").value).then(()=>{})
 }
