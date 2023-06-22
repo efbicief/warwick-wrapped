@@ -14,5 +14,8 @@ config:
 
 Warwick ITS should give you the `consumer_secret` and `consumer_key` when signing up for OAuth.
 
-## Clone sub-modules
-If you're not using the latest version of git, you might need to use: `git clone --recurse-submodules`
+## Docker
+We use Github actions to create Docker images for Wrapped. You can find the latest package release [here](https://github.com/efbicief/warwick-wrapped/pkgs/container/warwick-wrapped). Note that you should use your favourite container management software to map a config file to `app/config/config.yaml`.
+
+## Docs
+This software is deployed using UWCS services. Any documentation is on their Tech Team wiki [here](https://techteam.uwcs.co.uk/en/services/Wrapped).
